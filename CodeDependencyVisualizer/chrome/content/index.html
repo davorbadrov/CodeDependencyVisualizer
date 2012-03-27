@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Tesing Dependency Visualizer</title>
+    <style>
+        .keyword{ color: #00008b;}
+        .identifier { font-weight: bold;}
+        .literal { color: red; }
+        body
+        {
+            font-family: Consolas;
+        }
+    </style>
+    <script src="initFb.js"></script>
+    <script src="helpers/ASTHelper.js"></script>
+    <script src="codeMarkupGenerator/testData.js"></script>
+    <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
+</head>
+<body>
+    <div id="codeHtmlContainer"></div>
+    <script>
+        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[0]);
+    </script>
+</body>
+</html>
