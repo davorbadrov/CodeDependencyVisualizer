@@ -12,6 +12,7 @@
         }
     </style>
     <script src="initFb.js"></script>
+    <script src="helpers/valueTypeHelper.js"></script>
     <script src="helpers/ASTHelper.js"></script>
     <script src="codeMarkupGenerator/testData.js"></script>
     <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
@@ -19,7 +20,7 @@
 <body>
     <div id="codeHtmlContainer"></div>
     <script>
-        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[0]);
+        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[3]);
     </script>
 </body>
 </html>

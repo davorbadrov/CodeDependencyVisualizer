@@ -257,6 +257,7 @@ Firecrow.ASTHelper =
     },
 
     isProgram: function(element) { return this.isElementOfType(element, this.CONST.Program); },
+    isFunction: function(element) { return this.isFunctionDeclaration(element) || this.isFunctionExpression(element); },
     isFunctionDeclaration: function(element) { return this.isElementOfType(element, this.CONST.FunctionDeclaration); },
     isVariableDeclaration: function(element) { return this.isElementOfType(element, this.CONST.VariableDeclaration); },
     isVariableDeclarator: function(element) { return this.isElementOfType(element, this.CONST.VariableDeclarator); },
