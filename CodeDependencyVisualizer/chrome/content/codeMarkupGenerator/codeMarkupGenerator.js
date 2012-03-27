@@ -86,14 +86,14 @@ Firecrow.CodeMarkupGenerator =
 
         html += "{";
 
-        this.currentIntendation += "&nbsp;";
+        this.currentIntendation += "&nbsp;&nbsp;";
 
         blockStatement.body.forEach(function(statement)
         {
             html += this.generateHtml(statement);
         }, this);
 
-        this.currentIntendation = this.currentIntendation.replace(/&nbsp;$/g, "");
+        this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
 
         html += "}";
         html += this.getEndElementHtml("div");
@@ -182,7 +182,7 @@ Firecrow.CodeMarkupGenerator =
 
     getElementHtml: function(elementType, attributes, content)
     {
-        return this.getStartElementHtml(elementType, attributes) + this.getHtmlContent(content) + this.getEndElementHtml(elementType);
+        return this.getStartElementHtml(elementType, attributes) + content + this.getEndElementHtml(elementType);
     },
 
     getHtmlContent: function(content)
