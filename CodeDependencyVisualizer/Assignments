@@ -1,4 +1,4 @@
 1. Koristeći ASTHelper.traverseAst -  function(astElement, processElementFunction)
    obići cilo stablo i svakom elementu postaviti neki id; -> nadopuniti liniju 17 u testData.js
-
+		- id riješen buildStringId() funkcijom - testData.js
 2. Kad generiraš markup svakom od tih elemenata definirat id prema astId svojstvu

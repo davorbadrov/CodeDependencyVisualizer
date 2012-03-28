@@ -9,11 +9,14 @@ const astHelper = Firecrow.ASTHelper;
 
 Firecrow.CodeMarkupGenerator =
 {
-    currentIntendation: "",
-    generateHtml: function(astElement)
+    //currentIntendation: "",
+	currentLine: 1,
+	currentIndentation: 0, // current column ?
+	generateHtml: function(astElement)
     {
         try
         {
+        	
             if(astHelper.isProgram(astElement))
             {
                 var html = "";
@@ -31,9 +34,28 @@ Firecrow.CodeMarkupGenerator =
 
                 return html;
             }
+       
+            /**
+             * Statements
+             */
+            else if (astHelper.isEmptyStatement(astElement)) { return this.generateFromEmptyStatement(astElement); }
+            else if (astHelper.isBlockStatement(astElement)) { return this.generateFromBlockStatement(astElement); }
+            else if (astHelper.isExpressionStatement(astElement)) { return this.generateFromExpressionStatement(astElement); }
+            else if (astHelper.isIfStatement(astElement)) { return this.generateFromIfStatement(astElement); }
+            
+            /**
+             * Declarations
+             */
             else if (astHelper.isFunctionDeclaration(astElement)) { return this.generateFromFunctionDeclaration(astElement); }
             else if (astHelper.isVariableDeclaration(astElement)) { return this.generateFromVariableDeclaration(astElement); }
-            else if (astHelper.isBlockStatement(astElement)) { return this.generateFromBlockStatement(astElement); }
+    
+            /**
+             *  Expressions
+             */
+            else if (astHelper.isAssignmentExpression(astElement)) { return this.generateFromAssignmentExpression(astElement); }
+            else if (astHelper.isBinaryExpression(astElement)) { return this.generateFromBinaryExpression(astElement); }
+            else if (astHelper.isLiteral(astElement)) { return this.generateFromLiteral(astElement); }
+            else if (astHelper.isIdentifier(astElement)) { return this.generateFromIdentifier(astElement); }
         }
         catch(e) { alert("Error while generating HTML in codeMarkupGenerator: " + e); }
     },
@@ -56,51 +78,171 @@ Firecrow.CodeMarkupGenerator =
 
     generateFunctionParametersHtml: function(functionDecExp)
     {
-        if(!astHelper.isFunction(functionDecExp)) { alert("Invalid element when generating function parameters html code!"); return ""; }
-
-        var html = "(";
-
-        for(var i = 0; i < functionDecExp.params.length; i++)
-        {
-            if(i != 0) { html += ", "; }
-
-            html += this.generateFromPattern(functionDecExp.params[i]);
-        }
-        html += ")";
-
-        return html;
+    	try
+    	{
+	        if(!astHelper.isFunction(functionDecExp)) { alert("Invalid element when generating function parameters html code!"); return ""; }
+	
+	        var html = "(";
+	
+	        for(var i = 0; i < functionDecExp.params.length; i++)
+	        {
+	            if(i != 0) { html += ", "; }
+	
+	            html += this.generateFromPattern(functionDecExp.params[i]);
+	        }
+	        html += ")";
+	
+	        return html;
+    	}
+        catch(e) { alert("Error when generating HTML from function parameters:" + e);}
     },
 
     generateFromFunctionBody: function(functionDeclExp)
     {
-        if(!astHelper.isFunction(functionDeclExp)) { alert("Invalid element when generating function body html code!"); return ""; }
-
-        return this.generateHtml(functionDeclExp.body);
+    	try
+    	{
+	        if(!astHelper.isFunction(functionDeclExp)) { alert("Invalid element when generating function body html code!"); return ""; }
+	
+	        return this.generateHtml(functionDeclExp.body);
+    	}
+        catch(e) { alert("Error when generating HTML from function body:" + e); }
     },
 
     generateFromBlockStatement: function(blockStatement)
     {
-        if(!astHelper.isBlockStatement(blockStatement)) { alert("Invalid element when generating block statement html code!"); return ""; }
-
-        var html = this.getStartElementHtml("div", { class:'block', id : blockStatement.astId});
-
-        html += "{";
-
-        this.currentIntendation += "&nbsp;&nbsp;";
-
-        blockStatement.body.forEach(function(statement)
-        {
-            html += this.generateHtml(statement);
-        }, this);
-
-        this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
-
-        html += "}";
-        html += this.getEndElementHtml("div");
-
-        return html;
+    	try
+    	{
+	        if(!astHelper.isBlockStatement(blockStatement)) { alert("Invalid element when generating block statement html code!"); return ""; }
+	
+	        var html = this.getStartElementHtml("div", { class:'block', id: blockStatement.astId});
+	
+	        html += "{";
+	
+	        //this.currentIntendation += "&nbsp;&nbsp;";
+	        ind = ++this.currentIndentation;
+	        blockStatement.body.forEach(function(statement)
+	        {
+	            html += this.generateHtml(statement);
+	        }, this);
+	
+	        //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
+	        this.currentIndentation--;
+	        html += "}";
+	        html += this.getEndElementHtml("div");
+	
+	        return html;
+    	}
+        catch(e) { alert("Error when generating HTML from block statement:" + e);}
     },
-
+    
+    generateFromEmptyStatement: function(emptyStatement)
+    {
+    	try
+    	{
+	    	if(!astHelper.isEmptyStatement(emptyStatement)) { alert("Invalid element when generating empty statement html code!"); return ""; }
+	 
+	    	var html = "";
+	    	
+	    	html += this.getStartElementHtml("span", { class:'emptyStatement' });
+	    	html += ";";
+	    	html += this.getEndElementHtml("span");
+	    	
+	    	return html;
+    	}
+        catch(e) { alert("Error when generating HTML from empty statement:" + e); }
+    },
+    
+    generateFromExpressionStatement: function(expressionStatement)
+    {
+    	try
+    	{
+	    	if(!astHelper.isExpressionStatement(expressionStatement)) { alert("Invalid element when generating expression statement html code!"); return "";}
+	    	
+	    	var html = "";
+	    	
+	    	html += this.getStartElementHtml("span", { class: "expressionStatement"});
+	    	
+	    	html += this.generateHtml(expressionStatement.expression);
+	    	
+	    	html += this.getEndElementHtml("span");
+	    	
+	    	return html;
+    	}
+        catch(e) { alert("Error when generating HTML from expression statement:" + e); }
+    },
+    
+    generateFromAssignmentExpression: function(assignmentExpression)
+    {
+    	try
+    	{
+	    	if(!astHelper.isAssignmentExpression(assignmentExpression)) { alert("Invalid element when generating assignment expression html code!"); return "";}
+	    	
+	    	var html = "";
+	    	
+	    	html += this.getStartElementHtml("span", { class: "assignmentExpression"});
+	    	
+			html += this.generateHtml(assignmentExpression.left);
+	    	html += " " + assignmentExpression.operator + " "; 
+	    	html += this.generateHtml(assignmentExpression.right);
+	    	
+	    	html += this.getEndElementHtml("span");
+	    	
+	    	return html;
+    	}
+        catch(e) { alert("Error when generating HTML from assignment expression:" + e); }
+    },
+    
+    generateFromBinaryExpression: function(binaryExpression)
+    {
+    	try
+    	{
+	    	if(!astHelper.isBinaryExpression(binaryExpression)) { alert("Invalid element when generating binary expression html code!"); return ""; }
+	
+	    	var html = "";
+	
+	    	html += this.getStartElementHtml("span", { class: "binaryExpression"});
+	    	
+			html += this.generateHtml(binaryExpression.left);
+	    	html += " " + binaryExpression.operator + " "; 
+	    	html += this.generateHtml(binaryExpression.right);
+	    	
+	    	html += this.getEndElementHtml("span");
+	    	
+	    	return html;
+    	}
+        catch(e) { alert("Error when generating HTML from binary expression:" + e); }
+    },
+    
+    generateFromIfStatement: function(ifStatement)
+    {
+    	try
+    	{
+	    	if(!astHelper.isIfStatement(ifStatement)) { alert("Invalid element when generating empty statement html code!"); return ""; }
+	    	
+	    	var html = "";
+	    	
+	    	html += this.getElementHtml("span", {class:"keyword"}, "if");
+	    	
+	    	// test expression
+	    	html += " (";
+	    	html += this.generateHtml(ifStatement.test);
+	    	html += ")";
+	    	
+	    	// consequent statement (block statement) (if test evaluates to true)
+	    	html += this.generateHtml(ifStatement.consequent)
+	    	
+	    	// alternate statement if not null, that is, if specified
+	    	if(ifStatement.alternate != null)
+			{
+	    		html += this.getElementHtml("span", {class:"keyword"}, "else ");
+	    		html += this.generateHtml(ifStatement.alternate);
+			}
+		
+	    	return html;
+    	}
+        catch(e) { alert("Error when generating HTML from if statement:" + e); }
+    },
+    
     generateFromVariableDeclaration: function(variableDeclaration)
     {
         try
@@ -159,27 +301,50 @@ Firecrow.CodeMarkupGenerator =
 
     generateFromPattern: function(pattern)
     {
-        //NOT FINISHED: there are other patterns!
-        if(!astHelper.isIdentifier(pattern)) { alert("The pattern is not an identifier when generating html."); return "";}
-
-        if(astHelper.isIdentifier(pattern)) { return this.generateFromIdentifier(pattern);}
-        else if(true) {}
+    	try
+    	{
+	        //NOT FINISHED: there are other patterns!
+	        if(!astHelper.isIdentifier(pattern)) { alert("The pattern is not an identifier when generating html."); return "";}
+	
+	        if(astHelper.isIdentifier(pattern)) { return this.generateFromIdentifier(pattern);}
+	        else if(true) {}
+    	}
+        catch(e) { alert("Error when generating HTML from pattern:" + e);}
     },
 
     generateFromIdentifier: function(identifier)
     {
-        if(!astHelper.isIdentifier(identifier)) { alert("The identifier is not valid when generating html."); return "";}
-
-        return this.getElementHtml("span", {class: "identifier"}, identifier.name);
+    	try
+    	{
+	        if(!astHelper.isIdentifier(identifier)) { alert("The identifier is not valid when generating html."); return "";}
+	
+	        return this.getElementHtml("span", {class: "identifier"}, identifier.name);
+    	}
+        catch(e) { alert("Error when generating HTML from an identifier:" + e);}
     },
 
     generateFromExpression: function(expression)
     {
-        if(!astHelper.isLiteral(expression)) { alert("Currently when generating html from expressions we only support literals!"); return; }
-
-        if(astHelper.isLiteral(expression)) { return this.getElementHtml("span", {class: "literal"}, expression.value); }
+    	try
+    	{
+	        if(!astHelper.isLiteral(expression)) { alert("Currently when generating html from expressions we only support literals!"); return; }
+	
+	        if(astHelper.isLiteral(expression)) { return this.getElementHtml("span", {class: "literal"}, expression.value); }
+    	}
+        catch(e) { alert("Error when generating HTML from expression:" + e);}
     },
 
+    generateFromLiteral: function(literal)
+    {
+    	try
+    	{
+    		if(!astHelper.isLiteral(literal)) { alert("The literal is not valid when generating html."); return ""; }
+    	 
+    		if(astHelper.isLiteral(literal)) { return this.getElementHtml("span", {class: "literal"}, literal.value); }
+    	}
+        catch(e) { alert("Error when generating HTML from literal:" + e);}
+    },
+    
     getElementHtml: function(elementType, attributes, content)
     {
         return this.getStartElementHtml(elementType, attributes) + content + this.getEndElementHtml(elementType);
