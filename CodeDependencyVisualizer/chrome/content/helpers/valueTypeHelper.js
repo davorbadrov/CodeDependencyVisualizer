@@ -8,6 +8,13 @@ Firecrow.ValueTypeHelper =
         return variable instanceof className;
     },
 
+    isRegExp: function(variable)
+    {
+        if (this.isNull(variable)) { return false; }
+
+        return (typeof variable) == "object" && variable.constructor.name == "RegExp";
+    },
+
     isBoolean: function(variable)
     {
         if (this.isNull(variable)) { return false; }
@@ -20,6 +27,13 @@ Firecrow.ValueTypeHelper =
         if (this.isNull(variable)) { return false; }
 
         return (typeof variable) == "string" || variable instanceof String;
+    },
+
+    isNumber: function(variable)
+    {
+        if (this.isNull(variable)) { return false; }
+
+        return (typeof variable) == "number";
     },
 
     isInteger: function (variable)
@@ -269,6 +283,6 @@ Firecrow.ValueTypeHelper =
         var indexOf = string.substring(startpos || 0).search(regex);
         return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
     }
-}
+};
 /******/
 }});

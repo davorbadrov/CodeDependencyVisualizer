@@ -3,29 +3,29 @@ FBL.ns(function () { with (FBL) {
 
 const ValueTypeHelper = Firecrow.ValueTypeHelper;
 
-Firecrow.ASTHelper = 
+Firecrow.ASTHelper =
 {
 	parseSourceCodeToAST: function(sourceCode, sourceCodePath, startLine)
 	{
 		try
 		{
 			Components.utils.import("resource://gre/modules/reflect.jsm");
-			
+
 			return Reflect.parse
 			(
-				sourceCode, 
+				sourceCode,
 				{ loc:true, source: sourceCodePath, line: startLine }
 			);
 		}
 		catch(e) { alert("Error while getting AST from source code@" + sourceCodePath + "; error: " + sourceCodePath); }
 	},
-	
+
 	getTypeExpressionsFromProgram: function(program, types)
 	{
 		try
 		{
 			var result = {};
-			
+
 			var traverserFunction = function(elementValue, elementName, parentObject)
 			{
 				types.forEach(function(type)
@@ -33,19 +33,19 @@ Firecrow.ASTHelper =
 					if(elementName === "type" &&  elementValue === type)
 					{
 						if(result[type] == null) { result[type] = []; }
-						
+
 						result[type].push(parentObject);
 					}
 				});
 			};
-			
+
 			this.traverseAst(program, traverserFunction);
-			
+
 			return result;
 		}
 		catch(e) { alert("Error while getting type expressions from program in ASTHelper: " + e);}
 	},
-	
+
 	traverseAst: function(astElement, processElementFunction)
 	{
 		try
@@ -201,7 +201,10 @@ Firecrow.ASTHelper =
         return this.getParentOfTypes
         (
             codeConstruct,
-            [ Firecrow.Command.COMMAND_TYPE.FunctionDeclaration, Firecrow.Command.COMMAND_TYPE.FunctionExpression ]
+            [
+                this.CONST.FunctionDeclaration,
+                this.CONST.EXPRESSION.FunctionExpression
+            ]
         );
     },
 
@@ -211,11 +214,11 @@ Firecrow.ASTHelper =
         (
             codeConstruct,
             [
-                Firecrow.Command.COMMAND_TYPE.ForStatement,
-                Firecrow.Command.COMMAND_TYPE.ForInStatement,
-                Firecrow.Command.COMMAND_TYPE.WhileStatement,
-                Firecrow.Command.COMMAND_TYPE.DoWhileStatement,
-                Firecrow.Command.COMMAND_TYPE.SwitchStatement
+                this.CONST.ForStatement,
+                this.CONST.ForInStatement,
+                this.CONST.WhileStatement,
+                this.CONST.DoWhileStatement,
+                this.CONST.SwitchStatement
             ]
         );
     },
@@ -226,10 +229,10 @@ Firecrow.ASTHelper =
         (
             codeConstruct,
             [
-                Firecrow.Command.COMMAND_TYPE.ForStatement,
-                Firecrow.Command.COMMAND_TYPE.ForInStatement,
-                Firecrow.Command.COMMAND_TYPE.WhileStatement,
-                Firecrow.Command.COMMAND_TYPE.DoWhileStatement,
+                this.CONST.STATEMENT.ForStatement,
+                this.CONST.STATEMENT.ForInStatement,
+                this.CONST.STATEMENT.WhileStatement,
+                this.CONST.STATEMENT.DoWhileStatement
             ]
         );
     },
@@ -239,7 +242,7 @@ Firecrow.ASTHelper =
         return this.getParentOfTypes
         (
             codeConstruct,
-            [ Firecrow.Command.COMMAND_TYPE.SwitchStatement ]
+            [ this.CONST.STATEMENT.SwitchStatement ]
         );
     },
 
@@ -262,7 +265,7 @@ Firecrow.ASTHelper =
     isVariableDeclaration: function(element) { return this.isElementOfType(element, this.CONST.VariableDeclaration); },
     isVariableDeclarator: function(element) { return this.isElementOfType(element, this.CONST.VariableDeclarator); },
     isSwitchCase: function(element) { return this.isElementOfType(element, this.CONST.SwitchCase); },
-    isCatchCase: function(element) { return this.isElementOfType(element, this.CONST.CatchClause); },
+    isCatchClause: function(element) { return this.isElementOfType(element, this.CONST.CatchClause); },
     isIdentifier: function(element) { return this.isElementOfType(element, this.CONST.Identifier); },
     isLiteral: function(element) { return this.isElementOfType(element, this.CONST.Literal); },
 
@@ -318,11 +321,47 @@ Firecrow.ASTHelper =
     isGeneratorExpression: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.GeneratorExpression); },
     isLetExpression: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.LetExpression); },
 
-    isUnaryOperator: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.UnaryOperator); },
-    isBinaryOperator: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.BinaryOperator); },
-    isAssignmentOperator: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.AssignmentOperator); },
-    isUpdateOperator: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.UpdateOperator); },
-    isLogicalOperator: function(element) { return this.isElementOfType(element, this.CONST.EXPRESSION.LogicalOperator); },
+    isUnaryOperator: function(element) { return this.isElementOfType(element, this.CONST.OPERATOR.UnaryOperator); },
+    isBinaryOperator: function(element) { return this.isElementOfType(element, this.CONST.OPERATOR.BinaryOperator); },
+    isAssignmentOperator: function(element) { return this.isElementOfType(element, this.CONST.OPERATOR.AssignmentOperator); },
+    isUpdateOperator: function(element) { return this.isElementOfType(element, this.CONST.OPERATOR.UpdateOperator); },
+    isLogicalOperator: function(element) { return this.isElementOfType(element, this.CONST.OPERATOR.LogicalOperator); },
+
+    isBinaryEqualityOperator:function (element)
+    {
+        return element == "==" || element == "==="
+            || element == "!=" || element == "!==";
+    },
+
+    isBinaryMathOperator:function (element)
+    {
+        return element == "+" || element == "-"
+            || element == "*" || element == "/" || element == "%";
+    },
+
+    isBinaryRelationalOperator:function (element)
+    {
+        return element == "<" || element == "<="
+            || element == ">" || element == ">=";
+    },
+
+    isBinaryBitOperator:function (element)
+    {
+        return element == "|" || element == "&"
+            || element == "^"
+            || element == "<<" || element == ">>"
+            || element == ">>>";
+    },
+
+    isBinaryObjectOperator:function (element)
+    {
+        return element == "in" || element == "instanceof";
+    },
+
+    isBinaryXmlOperator:function (element)
+    {
+        return element == "..";
+    },
 
     CONST :
     {
@@ -386,6 +425,5 @@ Firecrow.ASTHelper =
         }
     }
 };
-
 /******/
 }});
