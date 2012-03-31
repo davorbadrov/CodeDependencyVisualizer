@@ -69,6 +69,7 @@ Firecrow.CodeMarkupGenerator =
             else if (astHelper.isWhileStatement(statement)) { html += this.generateFromWhileStatement(statement); }
             else if (astHelper.isDoWhileStatement(statement)) { html += this.generateFromDoWhileStatement(statement); }
             else if (astHelper.isForStatement(statement)) { html += this.generateFromForStatement(statement); }
+            else if (astHelper.isForInStatement(statement)) { html += this.generateFromForInStatement(statement); }
             else if (astHelper.isLabeledStatement(statement)) { html += this.generateFromLabeledStatement(statement); }
             else if (astHelper.isBreakStatement(statement)) { html+= this.generateFromBreakStatement(statement); }
             else if (astHelper.isContinueStatement(statement)) { html += this.generateFromContinueStatement(statement); }
@@ -123,7 +124,7 @@ Firecrow.CodeMarkupGenerator =
             if(astHelper.isFunctionDeclaration(functionDecExp)) classString = "functionDeclaration";
             else classString = "functionExpression";
 
-            var html = this.getStartElementHtml("div", {class: classString, id : "astElement" + functionDecExp.astId });
+            var html = this.getStartElementHtml("span", {class: classString, id : "astElement" + functionDecExp.astId });
 
             // function declaration has a function keyword and an identifier
             // function expression has none of the above
@@ -136,7 +137,7 @@ Firecrow.CodeMarkupGenerator =
             html +=  this.generateFunctionParametersHtml(functionDecExp)
                   +  this.generateFromFunctionBody(functionDecExp);
 
-            html += this.getEndElementHtml("div");
+            html += this.getEndElementHtml("span");
 
             return html;
         }
@@ -216,7 +217,7 @@ Firecrow.CodeMarkupGenerator =
 	
 	        //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
 	        
-	        html += "}";
+	        html += "<br>}";
 	        html += this.getEndElementHtml("div");
 	
 	        return html;
@@ -626,6 +627,32 @@ Firecrow.CodeMarkupGenerator =
     		return html;
     	}
     	catch(e) { alert("Error when generating HTML from for statement:" + e); }   
+    },
+
+    generateFromForInStatement: function(forInStatement)
+    {
+        try
+        {
+            if(!astHelper.isForInStatement(forInStatement)) { alert("Invalid element when generating for...in statement html code!"); return ""; }
+
+            console.log(forInStatement);
+
+            var html = this.getStartElementHtml("div", {class:"forInLoopDeclaration", id:"astElement" + forInStatement.astId});
+
+            html += this.getElementHtml("span", {class:"keyword"}, "for") + " ";
+
+            if(forInStatement.each === true) html += this.getElementHtml("span", {class:"keyword"}, "each") + " ";
+
+            html += "(" + this.generateHtml(forInStatement.left)
+                  + " in " + this.generateExpression(forInStatement.right) + ")";
+
+            html += this.generateStatement(forInStatement.body);
+
+            html += this.getEndElementHtml("div");
+
+            return html;
+        }
+        catch(e) { alert("Error when generating HTML from for...in statement:" + e); }
     },
 
     generateFromBreakStatement: function(breakStatement)
