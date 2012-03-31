@@ -209,7 +209,7 @@ Firecrow.CodeMarkupGenerator =
 	        
 	        blockStatement.body.forEach(function(statement)
 	        {
-	            html += this.generateHtml(statement) + "<br>";
+	            html += this.generateHtml(statement);
 	        }, this);
 	
 	        //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
@@ -495,23 +495,52 @@ Firecrow.CodeMarkupGenerator =
         {
             if(!astHelper.isObjectExpression(objectExpression)) { alert("Invalid element when generating object expression html code!"); return ""; }
 
+            console.log(objectExpression);
+
             var html = this.getStartElementHtml("span", {class: "objectExpression", id: "astElement" + objectExpression.astId});
 
-            //if get or set
-            for(var i = 0; i < objectExpression.properties.length; i++)
-            {
-                if(i != 0) html += ",";
 
-                if(objectExpression.properties[i].kind == "get" || objectExpression.properties[i].kind == "set")
+            // if objectExpression kind is "init" and has no properties, e.g.: object = {}
+            if(objectExpression.properties.length == 0) html += "{}";
+
+            // if objectExpression kind is "init" and has properties, e.g.: object = {x: 1, y: 2}
+            else if(objectExpression.properties[0].kind == "init")
+            {
+                html += "{";
+
+                for(var i = 0; i < objectExpression.properties.length; i++)
                 {
-                    html += this.getElementHtml("span", {class: "keyword"}, objectExpression.properties[i].kind)
-                          + " " + this.generateHtml(objectExpression.properties[i].key)
-                          + this.generateExpression(objectExpression.properties[i].value);
+                    if(i != 0) html += ", ";
+
+                    html += this.generateHtml(objectExpression.properties[i].key) + ": "
+                          + this.generateHtml(objectExpression.properties[i].value);
                 }
+
+                html += "}";
             }
 
-            // if init - UNFINISHED
-            if(objectExpression.properties.length == 0) html += "{}";
+            /** if objectExpression kind is "get" or "set", e.g.:
+                      get value()
+                     {
+                     return this._value}
+                     ,set value(val)
+                     {
+                     this._value = val}
+             */
+            else
+            {
+                for(var i = 0; i < objectExpression.properties.length; i++)
+                {
+                    if(i != 0) html += ", ";
+
+                    if(objectExpression.properties[i].kind == "get" || objectExpression.properties[i].kind == "set")
+                    {
+                        html += this.getElementHtml("span", {class: "keyword"}, objectExpression.properties[i].kind)
+                              + " " + this.generateHtml(objectExpression.properties[i].key)
+                              + this.generateExpression(objectExpression.properties[i].value);
+                    }
+                }
+            }
 
             html += this.getEndElementHtml("span");
 
@@ -553,7 +582,8 @@ Firecrow.CodeMarkupGenerator =
     		var html = this.getStartElementHtml("div", {class: "whileLoopDeclaration", id: "astElement" + whileStatement.astId})
                      + this.getElementHtml("span", {class:"keyword"}, "while")
                      + "(" + this.generateHtml(whileStatement.test) + ")"
-                     + this.generateHtml(whileStatement.body);
+                     + this.generateHtml(whileStatement.body)
+                     + this.getEndElementHtml("div");
     		
     		return html;
     	}
