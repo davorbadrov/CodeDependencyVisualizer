@@ -44,7 +44,8 @@ Firecrow.CodeMarkupGenerator =
             /**
              * rest
              */
-            else if(astHelper.isCatchClause(astElement))            { return this.generateFromCatchClause(astElement); }
+            else if (astHelper.isSwitchCase(astElement))            { return this.generateFromSwitchCase(astElement); }
+            else if (astHelper.isCatchClause(astElement))           { return this.generateFromCatchClause(astElement); }
             else if (astHelper.isFunction(astElement))              { return this.generateFromFunction(astElement); }
             else if (astHelper.isVariableDeclaration(astElement))   { return this.generateFromVariableDeclaration(astElement); }
             else if (astHelper.isLiteral(astElement))               { return this.generateFromLiteral(astElement); }
@@ -75,6 +76,7 @@ Firecrow.CodeMarkupGenerator =
             else if (astHelper.isWithStatement(statement)) { html += this.generateFromWithStatement(statement); }
             else if (astHelper.isTryStatement(statement)) { html += this.generateFromTryStatement(statement); }
             else if (astHelper.isThrowStatement(statement)) { html += this.generateFromThrowStatement(statement); }
+            else if (astHelper.isSwitchStatement(statement)) { html += this.generateFromSwitchStatement(statement); }
             else { alert("Error: Ast Statement element not defined: " + expression.type);  return "";}
 
             return html;
@@ -121,7 +123,7 @@ Firecrow.CodeMarkupGenerator =
             if(astHelper.isFunctionDeclaration(functionDecExp)) classString = "functionDeclaration";
             else classString = "functionExpression";
 
-            var html = this.getStartElementHtml("span", {class: classString, id : "astElement" + functionDecExp.astId });
+            var html = this.getStartElementHtml("div", {class: classString, id : "astElement" + functionDecExp.astId });
 
             // function declaration has a function keyword and an identifier
             // function expression has none of the above
@@ -134,7 +136,7 @@ Firecrow.CodeMarkupGenerator =
             html +=  this.generateFunctionParametersHtml(functionDecExp)
                   +  this.generateFromFunctionBody(functionDecExp);
 
-            html += this.getEndElementHtml("span");
+            html += this.getEndElementHtml("div");
 
             return html;
         }
@@ -495,10 +497,7 @@ Firecrow.CodeMarkupGenerator =
         {
             if(!astHelper.isObjectExpression(objectExpression)) { alert("Invalid element when generating object expression html code!"); return ""; }
 
-            console.log(objectExpression);
-
             var html = this.getStartElementHtml("span", {class: "objectExpression", id: "astElement" + objectExpression.astId});
-
 
             // if objectExpression kind is "init" and has no properties, e.g.: object = {}
             if(objectExpression.properties.length == 0) html += "{}";
@@ -713,6 +712,55 @@ Firecrow.CodeMarkupGenerator =
             return html;
         }
         catch(e) { alert("Error when generating HTML from throw statement:" + e); }
+    },
+
+    generateFromSwitchStatement: function(switchStatement)
+    {
+        try
+        {
+            if(!astHelper.isSwitchStatement(switchStatement)) { alert("Invalid element when generating switch statement html code!"); return ""; }
+
+            var html = this.getStartElementHtml("span", {class: "switchStatement", id: "astElement" + switchStatement.astId})
+                     + this.getElementHtml("span", {class: "keyword"}, "switch")
+                     + " (" + this.generateExpression(switchStatement.discriminant) + ")"
+                     + this.getEndElementHtml("span") + "<br>" + "{";
+
+            for(var i = 0; i < switchStatement.cases.length; i++)
+            {
+                html += this.generateFromSwitchCase(switchStatement.cases[i]);
+            }
+
+            html += "}";
+
+            return html;
+        }
+        catch(e) { alert("Error when generating HTML from switch statement:" + e); }
+    },
+
+    generateFromSwitchCase: function(switchCase)
+    {
+        try
+        {
+            if(!astHelper.isSwitchCase(switchCase)) { alert("Invalid element when generating switch case html code!"); return ""; }
+
+            console.log(switchCase);
+
+            var html = this.getStartElementHtml("div", {class: "switchCase", id: "astElement" + switchCase.astId})
+                     + " ";
+
+            if(switchCase.test === null) html += "default:";
+            else html += this.generateExpression(switchCase.test) + ":";
+
+            for(var i = 0; i < switchCase.consequent.length; i++)
+            {
+                html += this.generateStatement(switchCase.consequent[i]);
+            }
+
+            html += this.getEndElementHtml("div");
+
+            return html;
+        }
+        catch(e) { alert("Error when generating HTML from switch case:" + e); }
     },
 
     generateFromTryStatement: function(tryStatement)
