@@ -116,12 +116,22 @@ var y = { name: "John",
 <script>
     var sourceCodeScripts = document.querySelectorAll("script[class^=sourceCode]");
 
+    var hasInnerText = (document.getElementsByTagName("body")[0].innerText != undefined) ? true : false;
+
     var html = "";
     for(var i = 0; i < sourceCodeScripts.length; i++)
     {
         var scriptElement = sourceCodeScripts[i];
 
-        html += "<div style='float:left'><textarea rows='10' cols='60'>" + scriptElement.innerText + "</textarea></div>";
+        // Firefox doesn't support innerText
+        var plainText = "";
+        if(!hasInnerText)
+            plainText = scriptElement.textContent;
+        else
+            plainText = scriptElement.innerText;
+
+
+        html += "<div style='float:left'><textarea rows='10' cols='60'>" + plainText  + "</textarea></div>";
         html += "<div style='float:left'>" + FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[i]) + "</div>";
         html += "<div class='clearer'>**********************************************************************************</div>";
     }
