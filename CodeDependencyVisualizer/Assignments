@@ -1,4 +1,5 @@
-1. Koristeći ASTHelper.traverseAst -  function(astElement, processElementFunction)
-   obići cilo stablo i svakom elementu postaviti neki id; -> nadopuniti liniju 17 u testData.js
-		- id riješen buildStringId() funkcijom - testData.js
-2. Kad generiraš markup svakom od tih elemenata definirat id prema astId svojstvu
+1. Ubacivanje ";"
+2. Expression statment triba biti div
+3. Dodati testove za sve programske elemente (condition, for, for in, ..., logički,...)
+4. Generiranje linija koda;
+5. Kod svih blokovskih elementata (funkcije, petlje, grananja, with...) dodat ikonu da ga sakriva, pokaže

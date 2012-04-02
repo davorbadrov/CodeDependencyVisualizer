@@ -964,7 +964,7 @@ Firecrow.CodeMarkupGenerator =
                 return this.getElementHtml("span", {class: "string"}, "\"" + literal.value + "\"");
             else if (valueTypeHelper.isBoolean(literal.value) || valueTypeHelper.isNull(literal.value))
                 return this.getElementHtml("span", {class: "keyword"}, literal.value);
-            else if(valueTypeHelper.isInteger)
+            else if(valueTypeHelper.isInteger(literal.value))
                 return this.getElementHtml("span", {class: "number"}, literal.value)
             else
                 return this.getElementHtml("span", {class: "literal"}, literal.value);
