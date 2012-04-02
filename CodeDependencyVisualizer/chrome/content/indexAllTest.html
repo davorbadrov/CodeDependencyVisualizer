@@ -89,26 +89,80 @@ function someFoo(x, y)
 }
     </script>
     <script class="sourceCode04" type="text/codeSourceTemplate">
-function Field(val) {
-    this.value = val;
+        function Field(val) {
+        this.value = val;
+        }
+
+        Field.prototype =
+        {
+        get value() {
+        return this._value;
+        },
+        set value(val){
+        this._value = val;
+        }
+        };
+
+        var x = {};
+        var y = { name: "John",
+        surname: "Doe",
+        age: 36,
+        field: Field(2)
+        };
+    </script>
+    <script class="sourceCode05" type="text/codeSourceTemplate">
+var HtmlGenerator =
+{
+generateHtml: function(astElement)
+{
+try
+{
+if(astHelper.isProgram(astElement))
+{
+var html = "";
+
+if(astElement.body != null)
+{
+for(var i = 0; i < astElement.body.length; i++)
+{
+var previousElement = astElement.body[i-1];
+var currentElement = astElement.body[i];
+
+html += this.generateHtml(currentElement);
+html += "<br>";
+}
 }
 
-Field.prototype =
-{
-    get value() {
-        return this._value;
-    },
-    set value(val){
-        this._value = val;
-    }
-};
+return html;
+}
 
-var x = {};
-var y = { name: "John",
-          surname: "Doe",
-          age: 36,
-          field: Field(2)
-};
+/**
+* generalized
+*/
+else if (astHelper.isStatement(astElement))             { return this.generateStatement(astElement); }
+else if (astHelper.isExpression(astElement))            { return this.generateExpression(astElement); }
+
+/**
+* rest
+*/
+else if (astHelper.isSwitchCase(astElement))            { return this.generateFromSwitchCase(astElement); }
+else if (astHelper.isCatchClause(astElement))           { return this.generateFromCatchClause(astElement); }
+else if (astHelper.isFunction(astElement))              { return this.generateFromFunction(astElement); }
+else if (astHelper.isVariableDeclaration(astElement))   { return this.generateFromVariableDeclaration(astElement); }
+else if (astHelper.isLiteral(astElement))               { return this.generateFromLiteral(astElement); }
+else if (astHelper.isIdentifier(astElement))            { return this.generateFromIdentifier(astElement); }
+
+else { alert("Error while generating HTML in codeMarkupGenerator: unidentified ast element.: " + astElement.type); return "";}
+}
+catch(e) { alert("Error while generating HTML in codeMarkupGenerator: " + e); }
+}
+}
+    </script>
+    <script class="sourceCode06" type="text/codeSourceTemplate">
+ if (x%2 == 0)
+ {
+    odd = false;
+ }
     </script>
 </head>
 <body>
