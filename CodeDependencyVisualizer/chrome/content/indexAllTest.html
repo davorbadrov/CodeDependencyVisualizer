@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Testing Dependency Visualizer</title>
+    <style>
+        .keyword{ color: #00008b;}
+        .identifier { font-weight: bold;}
+        .literal { color: red; }
+        body
+        {
+            font-family: Consolas;
+        }
+
+        .clearer { clear: both;}
+    </style>
+    <script src="initFb.js"></script>
+    <script src="helpers/valueTypeHelper.js"></script>
+    <script src="helpers/ASTHelper.js"></script>
+    <script src="codeMarkupGenerator/testData.js"></script>
+    <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
+
+    <script class="sourceCode00" type="text/codeSourceTemplate">
+var myCar = new Car("Dodge", "Charger", 1963, "200k", true);
+var unkownCar = new Car();
+var someDodgeCar = new Car("Dodge");
+var re = new RegExp("ab+c");
+var re = /ab+c/;
+    </script>
+
+    <script class="sourceCode01" type="text/codeSourceTemplate">
+function someFoo(x, y)
+{
+    var result;
+
+    result = x.doSomething();
+    result += y.doSomethingElse();
+
+    return result;
+}
+    </script>
+
+    <script class="sourceCode02" type="text/codeSourceTemplate">
+var d=new Date();
+var theDay=d.getDay();
+switch (theDay)
+{
+    case 5:
+        document.write("Finally Friday");
+        break;
+    case 6:
+        document.write("Super Saturday");
+        break;
+    case 0:
+        document.write("Sleepy Sunday");
+        break;
+    default:
+        document.write("I'm looking forward to this weekend!");
+}
+    </script>
+
+    <script class="sourceCode03" type="text/codeSourceTemplate">
+function someFoo(x, y)
+{
+    try
+    {
+        doSomething: while(x<100)
+        {
+            y = x-1;
+            if(x%2 == 0)
+            break doSomething;
+            else
+            continue doSomething;
+        }
+
+        with({num: x})
+        {
+            getValue(x, y);
+        }
+    }
+    catch(e)
+    {
+        throw e;
+    }
+    finally
+    {
+        x = 0;
+        return y;
+    }
+}
+    </script>
+    <script class="sourceCode04" type="text/codeSourceTemplate">
+function Field(val) {
+    this.value = val;
+}
+
+Field.prototype =
+{
+    get value() {
+        return this._value;
+    },
+    set value(val){
+        this._value = val;
+    }
+};
+
+var x = {};
+var y = { name: "John",
+          surname: "Doe",
+          age: 36,
+          field: Field(2)
+};
+    </script>
+</head>
+<body>
+<div id="codeHtmlContainer"></div>
+<script>
+    var sourceCodeScripts = document.querySelectorAll("script[class^=sourceCode]");
+
+    var html = "";
+    for(var i = 0; i < sourceCodeScripts.length; i++)
+    {
+        var scriptElement = sourceCodeScripts[i];
+
+        html += "<div style='float:left'><textarea rows='10' cols='60'>" + scriptElement.innerText + "</textarea></div>";
+        html += "<div style='float:left'>" + FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[i]) + "</div>";
+        html += "<div class='clearer'>**********************************************************************************</div>";
+    }
+
+    document.getElementById("codeHtmlContainer").innerHTML = html;
+</script>
+</body>
+</html>
