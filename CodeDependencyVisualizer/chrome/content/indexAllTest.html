@@ -4,8 +4,10 @@
     <title>Testing Dependency Visualizer</title>
     <style>
         .keyword{ color: #00008b;}
-        .identifier { font-weight: bold;}
+        .identifier { font-weight: normal;}
         .literal { color: red; }
+        .string { color: red; }
+        .number { color: #ff4500; }
         body
         {
             font-family: Consolas;
@@ -20,26 +22,92 @@
     <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
 
     <script class="sourceCode00" type="text/codeSourceTemplate">
-var myCar = new Car("Dodge", "Charger", 1963, "200k", true);
-var unkownCar = new Car();
-var someDodgeCar = new Car("Dodge");
-var re = new RegExp("ab+c");
-var re = /ab+c/;
-    </script>
-
-    <script class="sourceCode01" type="text/codeSourceTemplate">
-function someFoo(x, y)
 {
+    ;
+    while (true);
+    while (true) z.doSomething();
     var result;
-
     result = x.doSomething();
     result += y.doSomethingElse();
-
-    return result;
 }
     </script>
 
+    <script class="sourceCode01" type="text/codeSourceTemplate">
+if(!astHelper.isLiteral(expression))
+{
+    alert("Currently when generating html from expressions we only support literals!");
+}
+
+if (valueTypeHelper.isString(literal.value))
+    html = this.getElementHtml("span", {class: "string"}, "\"" + literal.value + "\"");
+else if (valueTypeHelper.isBoolean(literal.value) || valueTypeHelper.isNull(literal.value))
+    html = this.getElementHtml("span", {class: "keyword"}, literal.value);
+else if(valueTypeHelper.isInteger(literal.value))
+    html = this.getElementHtml("span", {class: "number"}, literal.value);
+else if(valueTypeHelper.isRegExp(literal.value))
+    html =  this.getElementHtml("span", {class: "regExp"}, literal.value);
+else
+    html = this.getElementHtml("span", {class: "literal"}, literal.value);
+    </script>
+
+
     <script class="sourceCode02" type="text/codeSourceTemplate">
+function labelTest()
+{
+var a = new Array();
+var i, j, s = "", s1 = "";
+
+Outer:
+for (i = 0; i < 5; i++)
+{
+    Inner:
+    for (j = 0; j < 5; j++)
+    {
+        if (j == 2)
+            continue Inner;
+        else
+            a[i,j] = j + 1;
+    }
+
+    if (a[i,j] == null)
+    {
+        break Outer;
+    }
+}
+
+for (i = 0;i < 5; i++)
+{
+    s = ""
+    for (j = 0; j < 5; j++)
+    {
+        s += a[i,j];
+    }
+    s1 += s + "\n";
+}
+
+return s1;
+}
+    </script>
+
+
+    <script class="sourceCode03" type="text/codeSourceTemplate">
+function foo()
+{
+    with(document.forms[0])
+    {
+        var x = elements[0].value;
+        var y = elements[1].value;
+
+        with(elements[2])
+        {
+            var z = options[selectedIndex].text
+        }
+    }
+}
+    </script>
+
+
+    <script class="sourceCode04" type="text/codeSourceTemplate">
 var d=new Date();
 var theDay=d.getDay();
 switch (theDay)
@@ -58,111 +126,201 @@ switch (theDay)
 }
     </script>
 
-    <script class="sourceCode03" type="text/codeSourceTemplate">
-function someFoo(x, y)
-{
-    try
-    {
-        doSomething: while(x<100)
-        {
-            y = x-1;
-            if(x%2 == 0)
-            break doSomething;
-            else
-            continue doSomething;
-        }
 
-        with({num: x})
-        {
-            getValue(x, y);
-        }
-    }
-    catch(e)
-    {
-        throw e;
-    }
-    finally
-    {
-        x = 0;
-        return y;
-    }
-}
-    </script>
-    <script class="sourceCode04" type="text/codeSourceTemplate">
-        function Field(val) {
-        this.value = val;
-        }
-
-        Field.prototype =
-        {
-        get value() {
-        return this._value;
-        },
-        set value(val){
-        this._value = val;
-        }
-        };
-
-        var x = {};
-        var y = { name: "John",
-        surname: "Doe",
-        age: 36,
-        field: Field(2)
-        };
-    </script>
     <script class="sourceCode05" type="text/codeSourceTemplate">
-var HtmlGenerator =
-{
-generateHtml: function(astElement)
-{
+var txt="";
+var x=prompt("Enter a number between 5 and 10:","");
 try
 {
-if(astHelper.isProgram(astElement))
+    if(x>10)
+    {
+        throw "Err1";
+    }
+    else if(x<5)
+    {
+        throw "Err2";
+    }
+    else if(isNaN(x))
+    {
+        throw "Err3";
+    }
+}
+catch(err)
 {
-var html = "";
-
-if(astElement.body != null)
-{
-for(var i = 0; i < astElement.body.length; i++)
-{
-var previousElement = astElement.body[i-1];
-var currentElement = astElement.body[i];
-
-html += this.generateHtml(currentElement);
-html += "<br>";
-}
-}
-
-return html;
-}
-
-/**
-* generalized
-*/
-else if (astHelper.isStatement(astElement))             { return this.generateStatement(astElement); }
-else if (astHelper.isExpression(astElement))            { return this.generateExpression(astElement); }
-
-/**
-* rest
-*/
-else if (astHelper.isSwitchCase(astElement))            { return this.generateFromSwitchCase(astElement); }
-else if (astHelper.isCatchClause(astElement))           { return this.generateFromCatchClause(astElement); }
-else if (astHelper.isFunction(astElement))              { return this.generateFromFunction(astElement); }
-else if (astHelper.isVariableDeclaration(astElement))   { return this.generateFromVariableDeclaration(astElement); }
-else if (astHelper.isLiteral(astElement))               { return this.generateFromLiteral(astElement); }
-else if (astHelper.isIdentifier(astElement))            { return this.generateFromIdentifier(astElement); }
-
-else { alert("Error while generating HTML in codeMarkupGenerator: unidentified ast element.: " + astElement.type); return "";}
-}
-catch(e) { alert("Error while generating HTML in codeMarkupGenerator: " + e); }
-}
+    if(err=="Err1")
+    {
+        document.write("Error! The value is too high.");
+    }
+    if(err=="Err2")
+    {
+        document.write("Error! The value is too low.");
+    }
+    if(err=="Err3")
+    {
+        document.write("Error! The value is not a number.");
+    }
 }
     </script>
+
+
     <script class="sourceCode06" type="text/codeSourceTemplate">
- if (x%2 == 0)
- {
-    odd = false;
- }
+var i=0;
+while (i<=5)
+{
+    document.write("The number is " + i);
+    document.write("<br />");
+    i++;
+}
+
+var i=0;
+do
+{
+    document.write("The number is " + i);
+    document.write("<br />");
+    i++;
+}
+while (i<=5);
+
+do
+    something();
+while (x != null)
+
+var i=0;
+for (i=0;i<=5;i++)
+{
+    document.write("The number is " + i);
+    document.write("<br />");
+}
+
+for(x = 0; x != null; x.Next())
+    test(x.info());
+
+var person={fname:"John",lname:"Doe",age:25};
+
+var x;
+for (x in person)
+    document.write(person[x] + " ");
+    </script>
+
+
+    <script class="sourceCode07" type="text/codeSourceTemplate">
+function displaymessage()
+{
+    var x, y = "test";
+}
+    </script>
+
+    <script class="sourceCode08" type="text/codeSourceTemplate">
+function Field(val)
+{
+    this.value = val;
+}
+
+Field.prototype =
+{
+    get value(){
+        return this._value;
+    },
+    set value(val){
+        this._value = val;
+    }
+};
+
+var emptyObject = {};
+
+personObj=new Object();
+personObj.firstname="John";
+personObj.lastname="Doe";
+personObj.age=50;
+personObj.eyecolor="blue";
+
+personObj={firstname:"John",lastname:"Doe",age:50,eyecolor:"blue"};
+
+personObj.eat=eat;
+
+function person(firstname,lastname,age,eyecolor)
+{
+this.firstname=firstname;
+this.lastname=lastname;
+this.age=age;
+this.eyecolor=eyecolor;
+}
+
+var myFather=new person("John","Doe",50,"blue");
+var myMother=new person("Sally","Rally",48,"green");
+
+    </script>
+
+    <script class="sourceCode09" type="text/codeSourceTemplate">
+x.doSomething();
+
+if( x != 0)
+y.doSomethingMore(x, 12, "test");
+else if ( x && false)
+y.doSomethingElse();
+else
+y.doNothing();
+
+test = x == y ? true : false;
+
+x++, y--;
+++x, --y;
+
+if ( --x || y++ ? y++ - ++y : x-- + --x)
+callFoo();
+    </script>
+
+
+    <script class="sourceCode10" type="text/codeSourceTemplate">
+var myCars=new Array(); // regular array (add an optional integer
+myCars[0]="Saab";       // argument to control array's size)
+myCars[1]="Volvo";
+myCars[2]="BMW";
+
+var myCars=new Array("Saab","Volvo","BMW"); // condensed array
+
+var myCars=["Saab","Volvo","BMW"]; // literal array
+var noCars = [];	// empty array
+
+myCars[0]="Opel";
+document.write(myCars[0]);
+    </script>
+
+    <script class="sourceCode11" type="text/codeSourceTemplate">
+var x =
+{
+    generateSomething: function(param1)
+    {
+        return transform(param1);
+    }
+}
+    </script>
+
+    <script class="sourceCode12" type="text/codeSourceTemplate">
+Field.prototype =
+{
+    get value()
+    {
+      return this._value;
+    },
+    set value(val)
+    {
+        this._value = val;
+    }
+}
+
+var test =
+{
+    testFoo: function(x)
+    {
+     return x%2;
+    }
+}
+
+function testMe(param1)
+{
+    return "test: " + param1;
+}
     </script>
 </head>
 <body>

@@ -45,7 +45,7 @@ FBL.ns(function () { with (FBL) {
                  */
                 else if (astHelper.isSwitchCase(element))            { return this.generateFromSwitchCase(element); }
                 else if (astHelper.isCatchClause(element))           { return this.generateFromCatchClause(element); }
-                else if (astHelper.isFunction(element))              { return this.generateFromFunction(element); }
+                else if (astHelper.isFunction(element))              { return this.generateFromFunction(element, true); }
                 else if (astHelper.isVariableDeclaration(element))   { return this.generateFromVariableDeclaration(element); }
                 else if (astHelper.isVariableDeclarator(element))    { return this.generateFromVariableDeclarator(element); }
                 else if (astHelper.isLiteral(element))               { return this.generateFromLiteral(element); }
@@ -116,7 +116,7 @@ FBL.ns(function () { with (FBL) {
                 else if (astHelper.isSequenceExpression(expression)) { html += this.generateFromSequenceExpression(expression); }
                 else if (astHelper.isArrayExpression(expression)) { html += this.generateFromArrayExpression(expression); }
                 else if (astHelper.isObjectExpression(expression)) { html += this.generateFromObjectExpression(expression); }
-                else if (astHelper.isFunctionExpression(expression)) { html += this.generateFromFunction(expression); }
+                else if (astHelper.isFunctionExpression(expression)) { html += this.generateFromFunction(expression, true); }
                 else { alert("Error: AST Expression element not defined: " + expression.type);  return "";}
 
                 return html;
@@ -124,23 +124,28 @@ FBL.ns(function () { with (FBL) {
             catch(e) { alert("Error when generating HTML from an expression:" + e); }
         },
 
-        generateFromFunction: function(functionDecExp)
+        generateFromFunction: function(functionDecExp, hasFunctionKeyword)
         {
             try
             {
                 if(!astHelper.isFunction(functionDecExp)) { alert("Invalid Element when generating function html code!"); }
 
-                var classString = "";
-                if(astHelper.isFunctionDeclaration(functionDecExp)) classString = "functionDeclaration";
-                else classString = "functionExpression";
+                var html = this.getStartElementHtml("span", {class: functionDecExp.type, id : "astElement" + functionDecExp.astId });
 
-                var html = this.getStartElementHtml("span", {class: classString, id : "astElement" + functionDecExp.astId });
-
-                html += this.getElementHtml("span", {class:"keyword"}, "function") + " ";
-
-                if(functionDecExp.id != null)
+                if (functionDecExp.type === "FunctionDeclaration")
                 {
-                    html += this.generateFromIdentifier(functionDecExp.id);
+                    html += this.getElementHtml("span", {class: "keyword"}, "function") + " "
+                          + this.generateFromIdentifier(functionDecExp.id);
+                }
+                else
+                {
+                    console.log(functionDecExp);
+
+                    if(functionDecExp.id != null)
+                        html += this.generateFromIdentifier(functionDecExp.id);
+
+                    if(hasFunctionKeyword === true)
+                        html += this.getElementHtml("span", {class: "keyword"}, "function");
                 }
 
                 html +=  this.generateFunctionParametersHtml(functionDecExp)
@@ -500,14 +505,12 @@ FBL.ns(function () { with (FBL) {
 
                 var html = this.getStartElementHtml("span", {class: "objectExpression", id: "astElement" + objectExpression.astId});
 
+                html += "{";
                 // if objectExpression kind is "init" and has no properties, e.g.: object = {}
-                if(objectExpression.properties.length == 0) html += "{}";
-
+                if(objectExpression.properties.length == 0) /* do nothing */ ;
                 // if objectExpression kind is "init" and has properties, e.g.: object = {x: 1, y: 2}
                 else if(objectExpression.properties[0].kind == "init")
                 {
-                    html += "{";
-
                     for(var i = 0; i < objectExpression.properties.length; i++)
                     {
                         if(i != 0) html += ", ";
@@ -515,8 +518,6 @@ FBL.ns(function () { with (FBL) {
                         html += this.generateHtml(objectExpression.properties[i].key) + ": "
                             + this.generateHtml(objectExpression.properties[i].value);
                     }
-
-                    html += "}";
                 }
 
                 /** if objectExpression kind is "get" or "set", e.g.:
@@ -532,17 +533,24 @@ FBL.ns(function () { with (FBL) {
                     for(var i = 0; i < objectExpression.properties.length; i++)
                     {
                         if(i != 0) html += ", ";
+                        html += "<br>";
 
                         if(objectExpression.properties[i].kind == "get" || objectExpression.properties[i].kind == "set")
                         {
                             html += this.getElementHtml("span", {class: "keyword"}, objectExpression.properties[i].kind)
-                                + " " + this.generateHtml(objectExpression.properties[i].key)
-                                + this.generateExpression(objectExpression.properties[i].value);
+                                + " " + this.generateHtml(objectExpression.properties[i].key);
+
+                            if (astHelper.isFunctionExpression(objectExpression.properties[i].value))
+                                html += this.generateFromFunction(objectExpression.properties[i].value, false);
+                            else
+                                html += this.generateExpression(objectExpression.properties[i].value);
                         }
                     }
+
+
                 }
 
-                html += this.getEndElementHtml("span");
+                html += "}" + this.getEndElementHtml("span");
 
                 return html;
             }
@@ -556,10 +564,14 @@ FBL.ns(function () { with (FBL) {
                 if(!astHelper.isIfStatement(ifStatement)) { alert("Invalid element when generating empty statement html code!"); return ""; }
 
                 var html = this.getStartElementHtml("span", {class:"ifStatement", id:"astElement" + ifStatement.astId})
-                    + this.getElementHtml("span", {class:"keyword"}, "if")
-                    + " (" + this.generateHtml(ifStatement.test) + ") "
-                    + this.generateHtml(ifStatement.consequent)
-                    + this.generateEndLineHtml(ifStatement.consequent);
+                         + this.getElementHtml("span", {class:"keyword"}, "if")
+                         + " (" + this.generateHtml(ifStatement.test) + ") ";
+
+                if(!astHelper.isBlockStatement(ifStatement.consequent))
+                    html += "<br>";
+
+                html += this.generateHtml(ifStatement.consequent)
+                      + this.generateEndLineHtml(ifStatement.consequent);
 
                 if(ifStatement.alternate != null)
                 {
@@ -583,9 +595,14 @@ FBL.ns(function () { with (FBL) {
 
                 var html = this.getStartElementHtml("span", {class: "whileLoopDeclaration", id: "astElement" + whileStatement.astId})
                     + this.getElementHtml("span", {class:"keyword"}, "while")
-                    + "(" + this.generateHtml(whileStatement.test) + ")"
-                    + this.generateHtml(whileStatement.body)
-                    + this.getEndElementHtml("span");
+                    + "(" + this.generateHtml(whileStatement.test) + ")";
+
+                if(!astHelper.isBlockStatement(whileStatement.consequent))
+                    html += "<br>";
+
+                html += this.generateHtml(whileStatement.body)
+                      + this.generateEndLineHtml(whileStatement.consequent)
+                      + this.getEndElementHtml("span");
 
                 return html;
             }
@@ -599,11 +616,19 @@ FBL.ns(function () { with (FBL) {
                 if(!astHelper.isDoWhileStatement(doWhileStatement)) { alert("Invalid element when generating do while statement html code!"); return ""; }
 
                 var html = this.getStartElementHtml("div", {class:"doWhileLoopDeclaration", id: "astElement" + doWhileStatement.astId})
-                    + this.getElementHtml("span", {class:"keyword"}, "do")
-                    + this.generateHtml(doWhileStatement.body)
-                    + this.getElementHtml("span", {class:"keyword"}, "while")
-                    + "(" + this.generateHtml(doWhileStatement.test) + ")"
-                    + this.getEndElementHtml("div");
+                         + this.getElementHtml("span", {class:"keyword"}, "do");
+
+                if(!astHelper.isBlockStatement(doWhileStatement.body))
+                    html += "<br>";
+
+                html += this.generateHtml(doWhileStatement.body);
+
+                if(!astHelper.isBlockStatement(doWhileStatement.body))
+                    html += ";<br>";
+
+                html += this.getElementHtml("span", {class:"keyword"}, "while")
+                      + "(" + this.generateHtml(doWhileStatement.test) + ")"
+                      + this.getEndElementHtml("div");
 
                 return html;
             }
@@ -619,10 +644,17 @@ FBL.ns(function () { with (FBL) {
                 var html = this.getStartElementHtml("span", {class:"forLoopDeclaration", id:"astElement" + forStatement.astId});
 
                 html += this.getElementHtml("span", {class:"keyword"}, "for") + " "
-                    + "(" + this.generateHtml(forStatement.init) + "; "
-                    + this.generateHtml(forStatement.test) + "; "
-                    + this.generateHtml(forStatement.update) + ")"
-                    + this.generateHtml(forStatement.body);
+                      + "(" + this.generateHtml(forStatement.init) + "; "
+                      + this.generateHtml(forStatement.test) + "; "
+                      + this.generateHtml(forStatement.update) + ")";
+
+                if(!astHelper.isBlockStatement(forStatement.body))
+                    html += "<br>";
+
+                html += this.generateHtml(forStatement.body);
+
+                if(!astHelper.isBlockStatement(forStatement.body))
+                    html += ";<br>";
 
                 html += this.getEndElementHtml("span");
 
@@ -646,7 +678,13 @@ FBL.ns(function () { with (FBL) {
                 html += "(" + this.generateHtml(forInStatement.left)
                     + " in " + this.generateExpression(forInStatement.right) + ")";
 
+                if(!astHelper.isBlockStatement(forInStatement.body))
+                    html += "<br>";
+
                 html += this.generateStatement(forInStatement.body);
+
+                if(!astHelper.isBlockStatement(forInStatement.body))
+                    html += ";<br>";
 
                 html += this.getEndElementHtml("div");
 
@@ -966,7 +1004,7 @@ FBL.ns(function () { with (FBL) {
                 else if (valueTypeHelper.isBoolean(literal.value) || valueTypeHelper.isNull(literal.value))
                     return this.getElementHtml("span", {class: "keyword"}, literal.value);
                 else if(valueTypeHelper.isInteger(literal.value))
-                    return this.getElementHtml("span", {class: "number"}, literal.value)
+                    return this.getElementHtml("span", {class: "number"}, literal.value);
                 else if(valueTypeHelper.isRegExp(literal.value))
                 {
                     alert("RegExp!!");

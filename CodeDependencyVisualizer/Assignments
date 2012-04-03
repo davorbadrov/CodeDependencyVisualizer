@@ -1,5 +1,12 @@
 1. Ubacivanje ";"
+    - odrađeno
 2. Expression statment triba biti div
+    - dodjeljivanje ";" je odrađeno tako da ako se Expression Statement postavi u div container,
+    generira nepotreban novi red prije ";", primjer:
+    span: personObj.firstname = "John";
+    div: personObj.firstname = "John"
+             ;
 3. Dodati testove za sve programske elemente (condition, for, for in, ..., logički,...)
+    - odrađeno
 4. Generiranje linija koda;
 5. Kod svih blokovskih elementata (funkcije, petlje, grananja, with...) dodat ikonu da ga sakriva, pokaže
