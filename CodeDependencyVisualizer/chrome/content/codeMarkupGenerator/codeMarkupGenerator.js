@@ -11,20 +11,20 @@ FBL.ns(function () { with (FBL) {
     Firecrow.CodeMarkupGenerator =
     {
         currentIntendation: "",
-        generateHtml: function(astElement)
+        generateHtml: function(element)
         {
             try
             {
-                if(astHelper.isProgram(astElement))
+                if(astHelper.isProgram(element))
                 {
                     var html = "";
 
-                    if(astElement.body != null)
+                    if(element.body != null)
                     {
-                        for(var i = 0; i < astElement.body.length; i++)
+                        for(var i = 0; i < element.body.length; i++)
                         {
-                            var previousElement = astElement.body[i-1];
-                            var currentElement = astElement.body[i];
+                            //var previousElement = element.body[i-1];  unused variable
+                            var currentElement = element.body[i];
 
                             html += this.generateHtml(currentElement);
                             html += this.generateEndLineHtml(currentElement);
@@ -37,22 +37,22 @@ FBL.ns(function () { with (FBL) {
                 /**
                  * generalized
                  */
-                else if (astHelper.isStatement(astElement))             { return this.generateStatement(astElement); }
-                else if (astHelper.isExpression(astElement))            { return this.generateExpression(astElement); }
+                else if (astHelper.isStatement(element))             { return this.generateStatement(element); }
+                else if (astHelper.isExpression(element))            { return this.generateExpression(element); }
 
                 /**
                  * rest
                  */
-                else if (astHelper.isSwitchCase(astElement))            { return this.generateFromSwitchCase(astElement); }
-                else if (astHelper.isCatchClause(astElement))           { return this.generateFromCatchClause(astElement); }
-                else if (astHelper.isFunction(astElement))              { return this.generateFromFunction(astElement); }
-                else if (astHelper.isVariableDeclaration(astElement))   { return this.generateFromVariableDeclaration(astElement); }
-                else if (astHelper.isVariableDeclarator(astElement))    { return this.generateFromVariableDeclarator(astElement); }
-                else if (astHelper.isLiteral(astElement))               { return this.generateFromLiteral(astElement); }
-                else if (astHelper.isIdentifier(astElement))            { return this.generateFromIdentifier(astElement); }
+                else if (astHelper.isSwitchCase(element))            { return this.generateFromSwitchCase(element); }
+                else if (astHelper.isCatchClause(element))           { return this.generateFromCatchClause(element); }
+                else if (astHelper.isFunction(element))              { return this.generateFromFunction(element); }
+                else if (astHelper.isVariableDeclaration(element))   { return this.generateFromVariableDeclaration(element); }
+                else if (astHelper.isVariableDeclarator(element))    { return this.generateFromVariableDeclarator(element); }
+                else if (astHelper.isLiteral(element))               { return this.generateFromLiteral(element); }
+                else if (astHelper.isIdentifier(element))            { return this.generateFromIdentifier(element); }
                 else
                 {
-                    console.log(astElement);
+                    console.log(element);
                     alert("Error while generating HTML in codeMarkupGenerator: unidentified ast element."); return "";
                 }
             }
@@ -86,7 +86,7 @@ FBL.ns(function () { with (FBL) {
                 else if (astHelper.isTryStatement(statement)) { html += this.generateFromTryStatement(statement); }
                 else if (astHelper.isThrowStatement(statement)) { html += this.generateFromThrowStatement(statement); }
                 else if (astHelper.isSwitchStatement(statement)) { html += this.generateFromSwitchStatement(statement); }
-                else { alert("Error: Ast Statement element not defined: " + expression.type);  return "";}
+                else { alert("Error: AST Statement element not defined: " + expression.type);  return "";}
 
                 //html += this.generateEndLineHtml(statement);
 
@@ -117,7 +117,7 @@ FBL.ns(function () { with (FBL) {
                 else if (astHelper.isArrayExpression(expression)) { html += this.generateFromArrayExpression(expression); }
                 else if (astHelper.isObjectExpression(expression)) { html += this.generateFromObjectExpression(expression); }
                 else if (astHelper.isFunctionExpression(expression)) { html += this.generateFromFunction(expression); }
-                else { alert("Error: Ast Expression element not defined: " + expression.type);  return "";}
+                else { alert("Error: AST Expression element not defined: " + expression.type);  return "";}
 
                 return html;
             }
@@ -378,11 +378,9 @@ FBL.ns(function () { with (FBL) {
 
                 var html = this.getStartElementHtml("span", {class: "newExpression", id: "astElement" + newExpression.astId})
                     + this.getElementHtml("span", {class: "keyword"}, "new") + " "
-                    + this.generateHtml(newExpression.callee) + "(";
-
-                html += this.getSequenceHtml(newExpression.arguments);
-
-                html += ")";
+                    + this.generateHtml(newExpression.callee) + "("
+                    + this.getSequenceHtml(newExpression.arguments)
+                    + ")" + this.getEndElementHtml("span");
 
                 return html;
             }
@@ -751,9 +749,9 @@ FBL.ns(function () { with (FBL) {
                 if(!astHelper.isSwitchStatement(switchStatement)) { alert("Invalid element when generating switch statement html code!"); return ""; }
 
                 var html = this.getStartElementHtml("span", {class: "switchStatement", id: "astElement" + switchStatement.astId})
-                    + this.getElementHtml("span", {class: "keyword"}, "switch")
-                    + " (" + this.generateExpression(switchStatement.discriminant) + ")"
-                    + this.getEndElementHtml("span") + "<br>" + "{";
+                         + this.getElementHtml("span", {class: "keyword"}, "switch")
+                         + " (" + this.generateExpression(switchStatement.discriminant) + ")"
+                         + this.getEndElementHtml("span") + "<br>" + "{";
 
                 for(var i = 0; i < switchStatement.cases.length; i++)
                 {
@@ -812,6 +810,8 @@ FBL.ns(function () { with (FBL) {
                     html += this.getElementHtml("span", {class:"keyword"}, "finally")
                         + this.generateHtml(tryStatement.finalizer);
                 }
+
+                html += this.getEndElementHtml("div");
 
                 return html;
             }
