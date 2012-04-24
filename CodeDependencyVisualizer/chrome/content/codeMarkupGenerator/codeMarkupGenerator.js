@@ -5,14 +5,18 @@
 FBL.ns(function () { with (FBL) {
     /*******/
 
-        const astHelper = Firecrow.ASTHelper;
+    const astHelper = Firecrow.ASTHelper;
     const valueTypeHelper = Firecrow.ValueTypeHelper;
 
     Firecrow.CodeMarkupGenerator =
     {
+        lineNumber: 1,
         currentIntendation: "",
         generateHtml: function(element)
         {
+            if(astHelper.isProgram(element))
+                console.log(element);
+
             try
             {
                 if(astHelper.isProgram(element))
@@ -139,8 +143,6 @@ FBL.ns(function () { with (FBL) {
                 }
                 else
                 {
-                    console.log(functionDecExp);
-
                     if(functionDecExp.id != null)
                         html += this.generateFromIdentifier(functionDecExp.id);
 
@@ -643,15 +645,18 @@ FBL.ns(function () { with (FBL) {
 
                 var html = this.getStartElementHtml("span", {class:"forLoopDeclaration", id:"astElement" + forStatement.astId});
 
-                html += this.getElementHtml("span", {class:"keyword"}, "for") + " "
+                var code = this.getElementHtml("span", {class:"keyword"}, "for") + " "
                       + "(" + this.generateHtml(forStatement.init) + "; "
                       + this.generateHtml(forStatement.test) + "; "
                       + this.generateHtml(forStatement.update) + ")";
 
+                html += this.generateCodeContainer(code);
+
                 if(!astHelper.isBlockStatement(forStatement.body))
                     html += "<br>";
 
-                html += this.generateHtml(forStatement.body);
+                code = this.generateHtml(forStatement.body);
+                html += this.generateCodeContainer(code);
 
                 if(!astHelper.isBlockStatement(forStatement.body))
                     html += ";<br>";
@@ -771,9 +776,9 @@ FBL.ns(function () { with (FBL) {
                 if(!astHelper.isThrowStatement(throwStatement)) { alert("Invalid element when generating throw statement html code!"); return ""; }
 
                 var html = this.getStartElementHtml("span", {class: "throwStatement", id: "astElement" + throwStatement.astId})
-                    + this.getElementHtml("span", {class: "keyword"}, "throw")
-                    + " " + this.generateExpression(throwStatement.argument)
-                    + this.getEndElementHtml("span");
+                         + this.getElementHtml("span", {class: "keyword"}, "throw")
+                         + " " + this.generateExpression(throwStatement.argument)
+                         + this.getEndElementHtml("span");
 
                 return html;
             }
@@ -1092,13 +1097,31 @@ FBL.ns(function () { with (FBL) {
                 || astHelper.isLabeledStatement(currentElement)
                 || astHelper.isWithStatement(currentElement)
                 || astHelper.isBlockStatement(currentElement))
+                {
                     html = "";
+                }
                 else
-                    html =";<br>";
+                {
+                     html =";<br>";
+                }
 
                 return html;
             }
             catch(e) { alert("Error when generating end line element formatting html: " + e); }
+        },
+
+        generateCodeContainer: function(content)
+        {
+            try
+            {
+                var html = "";
+
+                html += this.getElementHtml("div", {class: "lineContainer"}, this.lineNumber++);
+                html += this.getElementHtml("div", {class: "codeContainer"}, content);
+
+                return html;
+            }
+            catch(e) { alert("Error when generating code container: " + e)}
         }
     }
 }});

@@ -4,12 +4,27 @@
     <title>Testing Dependency Visualizer</title>
     <style>
         .keyword{ color: #00008b;}
-        .identifier { font-weight: bold;}
+        .identifier { font-weight: normal;}
         .literal { color: red; }
+        .string { color: red; }
+        .number { color: #ff4500; }
+        .lineContainer {
+            padding: 0 4px 0 6px;
+            border-right: 2px solid #6CE26C;
+            text-align: right;
+            clear: both;
+            float: left;
+        }
+        .codeContainer {
+            padding-left: 10px;
+            float: left;
+        }
         body
         {
             font-family: Consolas;
         }
+
+        .clearer { clear: both;}
     </style>
     <script src="initFb.js"></script>
     <script src="helpers/valueTypeHelper.js"></script>
@@ -20,7 +35,7 @@
 <body>
     <div id="codeHtmlContainer"></div>
     <script>
-        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[12]);
+        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[13]);
     </script>
 </body>
 </html>
