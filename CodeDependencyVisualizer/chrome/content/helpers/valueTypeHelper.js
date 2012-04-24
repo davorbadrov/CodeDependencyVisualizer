@@ -282,6 +282,11 @@ Firecrow.ValueTypeHelper =
     {
         var indexOf = string.substring(startpos || 0).search(regex);
         return (indexOf >= 0) ? (indexOf + (startpos || 0)) : indexOf;
+    },
+
+    stringEndsWith: function (str, suffix)
+    {
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 };
 /******/

@@ -1,3 +1,9 @@
+0. ubaciti id-eve za sve elemente (našli za identifier i literal da fali)
+1. imena klasa generiranog html-a pribaciti na imena čvorova AST-a (ki šta je na ForStatementu)
+   pribaciti sve spanove u divove za elemente koji su na razini statementa (i onda update paddinga)
+
+
+
 1. Ubacivanje ";"
     - odrađeno
 2. Expression statment triba biti div

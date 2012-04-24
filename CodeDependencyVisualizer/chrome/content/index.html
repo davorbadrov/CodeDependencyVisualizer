@@ -31,11 +31,14 @@
     <script src="helpers/ASTHelper.js"></script>
     <script src="codeMarkupGenerator/testData.js"></script>
     <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
+    <script src="codeMarkupGenerator/indentationManager.js"></script>
 </head>
 <body>
     <div id="codeHtmlContainer"></div>
     <script>
-        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[13]);
+        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtml(testData[14]);
+        FBL.Firecrow.IndentationManger.indent(document.getElementById("codeHtmlContainer"));
+
     </script>
 </body>
 </html>

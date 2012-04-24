@@ -221,7 +221,7 @@ FBL.ns(function () { with (FBL) {
 
                 var html = this.getStartElementHtml("div", { class:'block', id: blockStatement.astId});
 
-                html += "{"+ "<br>";
+                html += this.getElementHtml("div", {class: "curlyBracket"}, "{");
 
                 //this.currentIntendation += "&nbsp;&nbsp;";
 
@@ -232,7 +232,7 @@ FBL.ns(function () { with (FBL) {
 
                 //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
 
-                html += "}";
+                html += this.getElementHtml("div", {class: "curlyBracket"}, "}");
                 html += this.getEndElementHtml("div");
 
                 return html;
@@ -643,25 +643,22 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isForStatement(forStatement)) { alert("Invalid element when generating for statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class:"forLoopDeclaration", id:"astElement" + forStatement.astId});
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.ForStatement, id:"astElement" + forStatement.astId});
 
-                var code = this.getElementHtml("span", {class:"keyword"}, "for") + " "
+                html += this.getElementHtml("span", {class:"keyword"}, "for") + " "
                       + "(" + this.generateHtml(forStatement.init) + "; "
                       + this.generateHtml(forStatement.test) + "; "
                       + this.generateHtml(forStatement.update) + ")";
 
-                html += this.generateCodeContainer(code);
+                html += this.generateHtml(forStatement.body);
 
                 if(!astHelper.isBlockStatement(forStatement.body))
                     html += "<br>";
 
-                code = this.generateHtml(forStatement.body);
-                html += this.generateCodeContainer(code);
-
                 if(!astHelper.isBlockStatement(forStatement.body))
                     html += ";<br>";
 
-                html += this.getEndElementHtml("span");
+                html += this.getEndElementHtml("div");
 
                 return html;
             }

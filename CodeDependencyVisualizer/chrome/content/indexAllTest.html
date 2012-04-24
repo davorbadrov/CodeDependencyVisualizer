@@ -20,6 +20,7 @@
     <script src="helpers/ASTHelper.js"></script>
     <script src="codeMarkupGenerator/testData.js"></script>
     <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
+    <script src="codeMarkupGenerator/indentationManager.js"></script>
 
     <script class="sourceCode00" type="text/codeSourceTemplate">
 {
@@ -322,6 +323,23 @@ function testMe(param1)
     return "test: " + param1;
 }
     </script>
+
+<script class="sourceCode13" type="text/codeSourceTemplate">
+    var a = 3;
+    
+    for(var i = 0; i < 10; i++)
+    {
+        for(var j = 0; j < 10; j++)
+        {
+            a++;
+    
+            if(a < 10)
+            {
+                a++;
+            }
+        }
+    }
+</script>
 </head>
 <body>
 <div id="codeHtmlContainer"></div>
