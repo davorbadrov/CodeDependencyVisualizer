@@ -4,7 +4,6 @@
  */
 FBL.ns(function () { with (FBL) {
     /*******/
-
     const astHelper = Firecrow.ASTHelper;
     const valueTypeHelper = Firecrow.ValueTypeHelper;
 
@@ -14,9 +13,6 @@ FBL.ns(function () { with (FBL) {
         currentIntendation: "",
         generateHtml: function(element)
         {
-            if(astHelper.isProgram(element))
-                console.log(element);
-
             try
             {
                 if(astHelper.isProgram(element))
@@ -134,7 +130,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isFunction(functionDecExp)) { alert("Invalid Element when generating function html code!"); }
 
-                var html = this.getStartElementHtml("span", {class: functionDecExp.type, id : "astElement" + functionDecExp.astId });
+                var html = this.getStartElementHtml("div", {class: functionDecExp.type, id : "astElement" + functionDecExp.astId });
 
                 if (functionDecExp.type === "FunctionDeclaration")
                 {
@@ -152,7 +148,7 @@ FBL.ns(function () { with (FBL) {
 
                 html +=  this.generateFunctionParametersHtml(functionDecExp)
                       +  this.generateFromFunctionBody(functionDecExp)
-                      + this.getEndElementHtml("span");
+                      + this.getEndElementHtml("div");
 
                 return html;
             }
@@ -219,7 +215,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isBlockStatement(blockStatement)) { alert("Invalid element when generating block statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("div", { class:'block', id: blockStatement.astId});
+                var html = this.getStartElementHtml("div", { class: astHelper.CONST.STATEMENT.BlockStatement, id: blockStatement.astId});
 
                 html += this.getElementHtml("div", {class: "curlyBracket"}, "{");
 
@@ -232,7 +228,7 @@ FBL.ns(function () { with (FBL) {
 
                 //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
 
-                html += this.getElementHtml("div", {class: "curlyBracket"}, "}");
+                html += this.getElementHtml("div", {class: "CurlyBracket"}, "}");
                 html += this.getEndElementHtml("div");
 
                 return html;
@@ -246,7 +242,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isEmptyStatement(emptyStatement)) { alert("Invalid element when generating empty statement html code!"); return ""; }
 
-                return this.getElementHtml("span", {class: "emptyStatement", id: "astElement" + emptyStatement.astId}, "");
+                return this.getElementHtml("div", {class: astHelper.CONST.STATEMENT.EmptyStatement, id: "astElement" + emptyStatement.astId}, "");
             }
             catch(e) { alert("Error when generating HTML from empty statement:" + e); }
         },
@@ -259,7 +255,7 @@ FBL.ns(function () { with (FBL) {
 
                 var html = "";
 
-                html += this.getStartElementHtml("span", { class: "expressionStatement"});
+                html += this.getStartElementHtml("span", { class: astHelper.CONST.STATEMENT.ExpressionStatement, id: "astElement" + expressionStatement.astId});
 
                 html += this.generateHtml(expressionStatement.expression);
 
@@ -276,7 +272,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isAssignmentExpression(assignmentExpression)) { alert("Invalid element when generating assignment expression html code!"); return "";}
 
-                return this.getStartElementHtml("span", { class: "assignmentExpression", id: "astElement" + assignmentExpression.astId})
+                return this.getStartElementHtml("span", { class: astHelper.CONST.EXPRESSION.AssignmentExpression, id: "astElement" + assignmentExpression.astId})
                     + this.generateHtml(assignmentExpression.left)
                     + " " + assignmentExpression.operator + " "
                     + this.generateHtml(assignmentExpression.right)
@@ -291,7 +287,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isUnaryExpression(unaryExpression)) { alert("Invalid element when generating unary expression html code!"); return "";}
 
-                var html = this.getStartElementHtml("span", {class: "unaryExpression", id: "astElement" + unaryExpression.astId});
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.EXPRESSION.UnaryExpression, id: "astElement" + unaryExpression.astId});
 
                 if(unaryExpression.prefix) html += unaryExpression.operator;
 
@@ -320,7 +316,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isBinaryExpression(binaryExpression)) { alert("Invalid element when generating binary expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", { class: "binaryExpression", id: "astElement" + binaryExpression.astId});
+                var html = this.getStartElementHtml("span", { class: astHelper.CONST.EXPRESSION.BinaryExpression, id: "astElement" + binaryExpression.astId});
 
                 html += this.generateHtml(binaryExpression.left);
                 html += " " + binaryExpression.operator + " ";
@@ -339,7 +335,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isLogicalExpression(logicalExpression)) { alert("Invalid element when generating logical expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", { class: "logicalExpression", id: "astElement" + logicalExpression.astId});
+                var html = this.getStartElementHtml("span", { class: astHelper.CONST.EXPRESSION.LogicalExpression, id: "astElement" + logicalExpression.astId});
 
                 html += this.generateHtml(logicalExpression.left);
                 html += " " + logicalExpression.operator + " ";
@@ -358,7 +354,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isUpdateExpression(updateExpression)) { alert("Invalid element when generating update expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", { class: "updateExpression", id: "astElement" + updateExpression.astId });
+                var html = this.getStartElementHtml("span", { class: astHelper.CONST.EXPRESSION.UpdateExpression, id: "astElement" + updateExpression.astId });
 
                 // if prefixed e.g.: ++i
                 if(updateExpression.prefix) html += updateExpression.operator;
@@ -383,7 +379,7 @@ FBL.ns(function () { with (FBL) {
 
                 if(!astHelper.isNewExpression(newExpression)) { alert("Invalid element when generating new expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "newExpression", id: "astElement" + newExpression.astId})
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.EXPRESSION.NewExpression, id: "astElement" + newExpression.astId})
                     + this.getElementHtml("span", {class: "keyword"}, "new") + " "
                     + this.generateHtml(newExpression.callee) + "("
                     + this.getSequenceHtml(newExpression.arguments)
@@ -402,7 +398,7 @@ FBL.ns(function () { with (FBL) {
 
                 var html;
 
-                html = this.getStartElementHtml("span", {class: "conditionalExpression", id: "astElement" + conditionalExpression.astId})
+                html = this.getStartElementHtml("span", {class: astHelper.CONST.EXPRESSION.ConditionalExpression, id: "astElement" + conditionalExpression.astId})
                     + this.generateHtml(conditionalExpression.test)
                     + " ? " + this.generateHtml(conditionalExpression.consequent)
                     + " : " + this.generateHtml(conditionalExpression.alternate)
@@ -448,7 +444,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isMemberExpression(memberExpression)) { alert("Invalid element when generating member expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", { class: "memberExpression", id: "astElement" + memberExpression.astId})
+                var html = this.getStartElementHtml("span", { class: astHelper.CONST.EXPRESSION.MemberExpression, id: "astElement" + memberExpression.astId})
                     + this.generateHtml(memberExpression.object);
 
                 if(memberExpression.computed === false)
@@ -473,7 +469,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isSequenceExpression(sequenceExpression)) { alert("Invalid element when generating sequence expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", { class: "sequenceExpression", id: "astElement" + sequenceExpression.astId});
+                var html = this.getStartElementHtml("span", { class: astHelper.CONST.EXPRESSION.SequenceExpression, id: "astElement" + sequenceExpression.astId});
 
                 html += this.getSequenceHtml(sequenceExpression.expressions);
 
@@ -490,7 +486,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isArrayExpression(arrayExpression)) { alert("Invalid element when generating array expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "arrayExpression", id: "astElement" + arrayExpression.astId});
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.EXPRESSION.ArrayExpression, id: "astElement" + arrayExpression.astId});
                 html += "[" + this.getSequenceHtml(arrayExpression.elements) + "]";
                 html += this.getEndElementHtml("span");
 
@@ -505,7 +501,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isObjectExpression(objectExpression)) { alert("Invalid element when generating object expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "objectExpression", id: "astElement" + objectExpression.astId});
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.EXPRESSION.ObjectExpression, id: "astElement" + objectExpression.astId});
 
                 html += "{";
                 // if objectExpression kind is "init" and has no properties, e.g.: object = {}
@@ -565,7 +561,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isIfStatement(ifStatement)) { alert("Invalid element when generating empty statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class:"ifStatement", id:"astElement" + ifStatement.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.IfStatement, id:"astElement" + ifStatement.astId})
                          + this.getElementHtml("span", {class:"keyword"}, "if")
                          + " (" + this.generateHtml(ifStatement.test) + ") ";
 
@@ -582,7 +578,7 @@ FBL.ns(function () { with (FBL) {
                          + this.generateEndLineHtml(ifStatement.alternate);
                 }
 
-                html += this.getEndElementHtml("span");
+                html += this.getEndElementHtml("div");
 
                 return html;
             }
@@ -595,7 +591,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isWhileStatement(whileStatement)) { alert("Invalid element when generating while statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "whileLoopDeclaration", id: "astElement" + whileStatement.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.WhileStatement, id: "astElement" + whileStatement.astId})
                     + this.getElementHtml("span", {class:"keyword"}, "while")
                     + "(" + this.generateHtml(whileStatement.test) + ")";
 
@@ -604,7 +600,7 @@ FBL.ns(function () { with (FBL) {
 
                 html += this.generateHtml(whileStatement.body)
                       + this.generateEndLineHtml(whileStatement.consequent)
-                      + this.getEndElementHtml("span");
+                      + this.getEndElementHtml("div");
 
                 return html;
             }
@@ -617,7 +613,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isDoWhileStatement(doWhileStatement)) { alert("Invalid element when generating do while statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("div", {class:"doWhileLoopDeclaration", id: "astElement" + doWhileStatement.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.DoWhileStatement, id: "astElement" + doWhileStatement.astId})
                          + this.getElementHtml("span", {class:"keyword"}, "do");
 
                 if(!astHelper.isBlockStatement(doWhileStatement.body))
@@ -646,23 +642,41 @@ FBL.ns(function () { with (FBL) {
                 var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.ForStatement, id:"astElement" + forStatement.astId});
 
                 html += this.getElementHtml("span", {class:"keyword"}, "for") + " "
-                      + "(" + this.generateHtml(forStatement.init) + "; "
-                      + this.generateHtml(forStatement.test) + "; "
-                      + this.generateHtml(forStatement.update) + ")";
-
-                html += this.generateHtml(forStatement.body);
-
-                if(!astHelper.isBlockStatement(forStatement.body))
-                    html += "<br>";
-
-                if(!astHelper.isBlockStatement(forStatement.body))
-                    html += ";<br>";
+                    + "(" + this.generateHtml(forStatement.init) + "; "
+                    + this.generateHtml(forStatement.test) + "; "
+                    + this.generateHtml(forStatement.update) + ") "
+                    + this.generateHtml(forStatement.body);
 
                 html += this.getEndElementHtml("div");
 
                 return html;
             }
             catch(e) { alert("Error when generating HTML from for statement:" + e); }
+
+//            try
+//            {
+//                if(!astHelper.isForStatement(forStatement)) { alert("Invalid element when generating for statement html code!"); return ""; }
+//
+//                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.ForStatement, id:"astElement" + forStatement.astId});
+//
+//                html += this.getElementHtml("span", {class:"keyword"}, "for") + " "
+//                      + "(" + this.generateHtml(forStatement.init) + "; "
+//                      + this.generateHtml(forStatement.test) + "; "
+//                      + this.generateHtml(forStatement.update) + ")";
+//
+//                html += this.generateHtml(forStatement.body);
+//
+//                if(!astHelper.isBlockStatement(forStatement.body))
+//                    html += "<br>";
+//
+//                if(!astHelper.isBlockStatement(forStatement.body))
+//                    html += ";<br>";
+//
+//                html += this.getEndElementHtml("div");
+//
+//                return html;
+//            }
+//            catch(e) { alert("Error when generating HTML from for statement:" + e); }
         },
 
         generateFromForInStatement: function(forInStatement)
@@ -671,7 +685,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isForInStatement(forInStatement)) { alert("Invalid element when generating for...in statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("div", {class:"forInLoopDeclaration", id:"astElement" + forInStatement.astId});
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.ForInStatement, id:"astElement" + forInStatement.astId});
 
                 html += this.getElementHtml("span", {class:"keyword"}, "for") + " ";
 
@@ -701,7 +715,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isBreakStatement(breakStatement)) { alert("Invalid element when generating break statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "breakStatement", id: "astElement" + breakStatement.astId})
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.STATEMENT.BreakStatement, id: "astElement" + breakStatement.astId})
                     + this.getElementHtml("span", {class:"keyword"}, "break");
 
                 if(breakStatement.label != null) html += " " + this.generateFromIdentifier(breakStatement.label);
@@ -719,7 +733,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isContinueStatement(continueStatement)) { alert("Invalid element when generating continue statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "continueStatement", id: "astElement" + continueStatement.astId})
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.STATEMENT.ContinueStatement, id: "astElement" + continueStatement.astId})
                     + this.getElementHtml("span", {class:"keyword"}, "continue");
 
                 if(continueStatement.label != null) html += " " + this.generateFromIdentifier(continueStatement.label);
@@ -737,12 +751,12 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isReturnStatement(returnStatement)) { alert("Invalid element when generating return statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "returnStatement", id: "astElement" + returnStatement.astId})
+                var html = this.getStartElementHtml("div", {class: "returnStatement", id: "astElement" + returnStatement.astId})
                     + this.getElementHtml("span", {class:"keyword"}, "return");
 
                 if(returnStatement.argument != null) html += " " + this.generateExpression(returnStatement.argument);
 
-                html += this.getEndElementHtml("span");
+                html += this.getEndElementHtml("div");
 
                 return html;
             }
@@ -755,11 +769,11 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isWithStatement(withStatement)) { alert("Invalid element when generating with statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "withStatement", id: "astElement" + withStatement.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.WithStatement, id: "astElement" + withStatement.astId})
                          + this.getElementHtml("span", {class:"keyword"}, "with") + " ("
                          + this.generateExpression(withStatement.object) + ")"
                          + this.generateStatement(withStatement.body)
-                         + this.getEndElementHtml("span");
+                         + this.getEndElementHtml("div");
 
                 return html;
             }
@@ -772,7 +786,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isThrowStatement(throwStatement)) { alert("Invalid element when generating throw statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "throwStatement", id: "astElement" + throwStatement.astId})
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.STATEMENT.ThrowStatement, id: "astElement" + throwStatement.astId})
                          + this.getElementHtml("span", {class: "keyword"}, "throw")
                          + " " + this.generateExpression(throwStatement.argument)
                          + this.getEndElementHtml("span");
@@ -788,17 +802,17 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isSwitchStatement(switchStatement)) { alert("Invalid element when generating switch statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "switchStatement", id: "astElement" + switchStatement.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.SwitchStatement, id: "astElement" + switchStatement.astId})
                          + this.getElementHtml("span", {class: "keyword"}, "switch")
                          + " (" + this.generateExpression(switchStatement.discriminant) + ")"
-                         + this.getEndElementHtml("span") + "<br>" + "{";
+                         + "<br>" + "{";
 
                 for(var i = 0; i < switchStatement.cases.length; i++)
                 {
                     html += this.generateFromSwitchCase(switchStatement.cases[i]);
                 }
 
-                html += "}";
+                html +=  "}" + this.getEndElementHtml("div");
 
                 return html;
             }
@@ -811,7 +825,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isSwitchCase(switchCase)) { alert("Invalid element when generating switch case html code!"); return ""; }
 
-                var html = this.getStartElementHtml("div", {class: "switchCase", id: "astElement" + switchCase.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.SwitchCase, id: "astElement" + switchCase.astId})
                     + " ";
 
                 if(switchCase.test === null) html += "default:<br>";
@@ -864,7 +878,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isLabeledStatement(labeledStatement)) { alert("Invalid element when generating labeled statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: "labeledStatement", id: "astElement" + labeledStatement.astId})
+                var html = this.getStartElementHtml("span", {class: astHelper.CONST.STATEMENT.LabeledStatement, id: "astElement" + labeledStatement.astId})
                     + this.generateFromIdentifier(labeledStatement.label) + ": "
                     + this.generateHtml(labeledStatement.body)
                     + this.getEndElementHtml("span");
@@ -882,7 +896,7 @@ FBL.ns(function () { with (FBL) {
 
                 var html = "";
 
-                html += this.getStartElementHtml("span", {class: 'variableDeclaration', id : "astElement" + variableDeclaration.astId });
+                html += this.getStartElementHtml("span", {class: astHelper.CONST.VariableDeclaration, id : "astElement" + variableDeclaration.astId });
                 html += this.getElementHtml("span", {class:"keyword"}, variableDeclaration.kind);
                 html += " ";
 
@@ -948,7 +962,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isCatchClause(catchClause)) { alert("Invalid element when generating catch clause html code!"); return ""; }
 
-                var html = this.getStartElementHtml("div", {class: "catchClause", id: "astElement" + catchClause.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.CatchClause, id: "astElement" + catchClause.astId})
                     + this.getElementHtml("span", {class: "keyword"}, "catch");
 
                 html += " (" + this.generateHtml(catchClause.param);
@@ -982,8 +996,14 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isLiteral(expression)) { alert("Currently when generating html from expressions we only support literals!"); return; }
 
-                if(astHelper.isLiteral(expression)) { return this.getElementHtml("span", {class: "literal"}, expression.value); }
-                if(astHelper.isIdentifier(expression)) { return this.getElementHtml("span", {class: "identifier"}, expression.name); }
+                if(astHelper.isLiteral(expression))
+                {
+                    return this.getElementHtml("span", {class: astHelper.CONST.Literal, id: "astElement" + expression.astId}, expression.value);
+                }
+                if(astHelper.isIdentifier(expression))
+                {
+                    return this.getElementHtml("span", {class: astHelper.CONST.Identifier, id: "astElement" + expression.astId}, expression.name);
+                }
                 if(astHelper.isUpdateExpression(expression))
                 {
                     var html = "";
@@ -1002,18 +1022,18 @@ FBL.ns(function () { with (FBL) {
                 if (!astHelper.isLiteral(literal)) { alert("The literal is not valid when generating html."); return ""; }
 
                 if (valueTypeHelper.isString(literal.value))
-                    return this.getElementHtml("span", {class: "string"}, "\"" + literal.value + "\"");
+                    return this.getElementHtml("span", {class: "string", id: "astElement" + literal.astId}, "\"" + encoder.escapeHtml(literal.value) + "\"");
                 else if (valueTypeHelper.isBoolean(literal.value) || valueTypeHelper.isNull(literal.value))
-                    return this.getElementHtml("span", {class: "keyword"}, literal.value);
+                    return this.getElementHtml("span", {class: "keyword", id: "astElement" + literal.astId}, literal.value);
                 else if(valueTypeHelper.isInteger(literal.value))
-                    return this.getElementHtml("span", {class: "number"}, literal.value);
+                    return this.getElementHtml("span", {class: "number", id: "astElement" + literal.astId}, literal.value);
                 else if(valueTypeHelper.isRegExp(literal.value))
                 {
                     alert("RegExp!!");
-                    return this.getElementHtml("span", {class: "regExp"}, literal.value);
+                    return this.getElementHtml("span", {class: "regExp", id: "astElement" + literal.astId}, literal.value);
                 }
                 else
-                    return this.getElementHtml("span", {class: "literal"}, literal.value);
+                    return this.getElementHtml("span", {class: astHelper.CONST.Literal, id: "astElement" + literal.astId}, literal.value);
             }
             catch(e) { alert("Error when generating HTML from literal:" + e);}
         },
