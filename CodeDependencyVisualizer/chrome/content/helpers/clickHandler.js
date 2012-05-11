@@ -16,20 +16,21 @@ function $(selector, el) {
 
 var test = [];
 test = $(".ForStatement");
+var hit = 0;
 
 for(var i = 0; i < test.length; i++)
 {
-    test[i].onclick = function()
-    {
-        alert("hit on: " + this.id);
-    }
-    console.log(test[i].innerHTML);
+    test[i].addEventListener("click", stopEvent, false);
+    test[i].addEventListener("click", handleClick, false);
+    //console.log(test[i].innerHTML);
+}
+function handleClick()
+{
+    alert("Clicked on: " + this.className + ", " + this.id);
 }
 
-test.onclick = function()
+function stopEvent(ev)
 {
-    alert("test");
+    ev.stopPropagation();
 }
-//var test = $('.ForStatement');
-//test.classList.add("highlightable");
 }
