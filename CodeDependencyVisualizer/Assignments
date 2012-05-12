@@ -4,19 +4,12 @@
 
 
 1. Ubacivanje ";"
-    - odrađeno
 2. Expression statment triba biti div
-    - dodjeljivanje ";" je odrađeno tako da ako se Expression Statement postavi u div container,
-    generira nepotreban novi red prije ";", primjer:
-    span: personObj.firstname = "John";
-    div: personObj.firstname = "John"
-             ;
 3. Dodati testove za sve programske elemente (condition, for, for in, ..., logički,...)
-    - odrađeno
 4. Generiranje linija koda; (odredi visinu kontenjera, podili za visionon linije - broj linija - toliiko ih generirat)
 5. Kod svih blokovskih elementata (funkcije, petlje, grananja, with...) dodat ikonu da ga sakriva, pokaže
 
 - LINIJE
 - INDENTACIJA
-- SELEKTIRAT SVE ELEMENTE
-- KAD KLIKNEŠ NA ELEMENT - STVORITI Hover-menu (za početak može stati samo u kutu stranice) i da unutra možemo staviti ikone
+- SELEKTIRAT SVE ELEMENTE - OK
+- KAD KLIKNEŠ NA ELEMENT - STVORITI Hover-menu (za početak može stati samo u kutu stranice) i da unutra možemo staviti ikone - OK više-manje
