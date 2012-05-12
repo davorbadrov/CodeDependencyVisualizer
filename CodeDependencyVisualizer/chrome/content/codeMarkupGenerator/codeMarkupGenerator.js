@@ -215,7 +215,7 @@ FBL.ns(function () { with (FBL) {
 
                 var html = this.getStartElementHtml("div", { class: astHelper.CONST.STATEMENT.BlockStatement + " Selectable", id: "astElement" + blockStatement.astId});
 
-                html += this.getElementHtml("div", {class: "curlyBracket"}, "{");
+                html += this.getElementHtml("div", {class: "Bracket"}, "{");
 
                 //this.currentIntendation += "&nbsp;&nbsp;";
 
@@ -226,7 +226,7 @@ FBL.ns(function () { with (FBL) {
 
                 //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
 
-                html += this.getElementHtml("div", {class: "CurlyBracket"}, "}");
+                html += this.getElementHtml("div", {class: "Bracket"}, "}");
                 html += this.getEndElementHtml("div");
 
                 return html;
