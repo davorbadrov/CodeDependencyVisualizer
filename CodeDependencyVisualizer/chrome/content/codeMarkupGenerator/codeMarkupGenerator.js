@@ -878,10 +878,10 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isLabeledStatement(labeledStatement)) { alert("Invalid element when generating labeled statement html code!"); return ""; }
 
-                var html = this.getStartElementHtml("span", {class: astHelper.CONST.STATEMENT.LabeledStatement + " Selectable", id: "astElement" + labeledStatement.astId})
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.LabeledStatement + " Selectable", id: "astElement" + labeledStatement.astId})
                     + this.generateFromIdentifier(labeledStatement.label) + ": "
                     + this.generateHtml(labeledStatement.body)
-                    + this.getEndElementHtml("span");
+                    + this.getEndElementHtml("div");
 
                 return html;
             }
