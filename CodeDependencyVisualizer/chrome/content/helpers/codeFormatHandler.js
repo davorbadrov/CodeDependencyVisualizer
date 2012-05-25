@@ -11,6 +11,9 @@ function codeFormatHandler()
     function createLineIndentation()
     {
         var blocks = $(".BlockStatement");
+//        Not all blocks are BlockStatements i.e. switch statements and object expressions
+//        var switches = $(".SwitchStatement");
+
         for (var i = 0; i < blocks.length; i++)
         {
             for (var j = 0; j < blocks[i].children.length; j++)
@@ -19,6 +22,16 @@ function codeFormatHandler()
                     blocks[i].children[j].setAttribute("style", "padding-left: 20px;");
             }
         }
+
+//        // REFACTORING NEEDED
+//        for (var x = 0; x < switches.length; x++)
+//        {
+//            for (var y = 0; y < switches[x].children.length; y++)
+//            {
+//                if(!hasClass(switches[x].children[y], "Bracket"))
+//                    switches[x].children[y].setAttribute("style", "padding-left: 20px;");
+//            }
+//        }
     }
 
     function createLineNumbers()

@@ -805,14 +805,18 @@ FBL.ns(function () { with (FBL) {
                 var html = this.getStartElementHtml("div", {class: astHelper.CONST.STATEMENT.SwitchStatement + " Selectable", id: "astElement" + switchStatement.astId})
                          + this.getElementHtml("span", {class: "keyword"}, "switch")
                          + " (" + this.generateExpression(switchStatement.discriminant) + ")"
-                         + "<br>" + "{";
+                         + "<br>";
+
+                html += this.getElementHtml("div", {class: "Bracket"}, "{");
 
                 for(var i = 0; i < switchStatement.cases.length; i++)
                 {
                     html += this.generateFromSwitchCase(switchStatement.cases[i]);
                 }
 
-                html +=  "}" + this.getEndElementHtml("div");
+                html += this.getElementHtml("div", {class: "Bracket"}, "{");
+
+                html += this.getEndElementHtml("div");
 
                 return html;
             }
@@ -985,7 +989,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isIdentifier(identifier)) { alert("The identifier is not valid when generating html."); return "";}
 
-                return this.getElementHtml("span", {class: "identifier"}, identifier.name);
+                return this.getElementHtml("span", {class: astHelper.CONST.Identifier + " Selectable", id: "astElement" + identifier.astId}, identifier.name);
             }
             catch(e) { alert("Error when generating HTML from an identifier:" + e);}
         },
@@ -1142,6 +1146,173 @@ FBL.ns(function () { with (FBL) {
                 return html;
             }
             catch(e) { alert("Error when generating code container: " + e)}
+        },
+
+        /************************************************
+         *  Function for generating HTML representation *
+         ************************************************/
+        generateHtmlRepresentation: function(root)
+        {
+            try
+            {
+                var html = "";
+
+                // generate the HTML Document Type
+                html += "<div>" + this.generateHtmlDocumentTypeTags(root.docType) + "</div>";
+
+                // generate the <html></html> tags and everything in between
+                html += "<div>" + this.generateHtmlOpeningTags(root.htmlElement.type, root.htmlElement.attributes);
+
+                // generate <head>
+                html += "<div>" + this.generateHtmlOpeningTags(root.htmlElement.children[0].type, root.htmlElement.children[0].attributes);
+
+                // generate <head> children
+                for (var i = 0; i < root.htmlElement.children[0].children.length; i++)
+                {
+                    html += "<div>" + this.generateHtmlElement(root.htmlElement.children[0].children[i]) + "</div>";
+                }
+                // generate </head>
+                html +=this.generateHtmlClosingTags(root.htmlElement.children[0].type) + "</div>";
+
+                // generate <body>
+                html += "<div>" + this.generateHtmlOpeningTags(root.htmlElement.children[2].type, root.htmlElement.children[2].attributes);
+
+                // generate <body> children
+                for (var i = 0; i < root.htmlElement.children[2].children.length; i++)
+                {
+                    html += "<div>" + this.generateHtmlElement(root.htmlElement.children[2].children[i]) + "</div>";
+                }
+                // generate </body>
+                html +=this.generateHtmlClosingTags(root.htmlElement.children[2].type) + "</div>";
+
+                // generate </html>
+                html += this.generateHtmlClosingTags(root.htmlElement.type) + "</div>";
+
+                return html;
+            }
+            catch(e)
+            {
+                alert("Error while creating a HTML representation of the site: " + e);
+            }
+        },
+        generateHtmlDocumentTypeTags: function(docType)
+        {
+            console.log(docType);
+
+            if (docType == "")
+            {
+                return this.generateHtmlOpeningTags("&#33;DOCTYPE html", []);
+            }
+            else if (docType === "http://www.w3.org/TR/html4/strict.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"', []);
+            }
+            else if (docType === "http://www.w3.org/TR/html4/loose.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"', []);
+            }
+            else if (docType === "http://www.w3.org/TR/html4/frameset.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd"', []);
+            }
+            else if (docType === "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"', []);
+            }
+            else if (docType === "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"', []);
+            }
+            else if (docType === "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"', []);
+            }
+            else if (docType === "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd")
+            {
+                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"', []);
+            }
+            else
+            {
+                return this.generateHtmlOpeningTags("&#33;DOCTYPE html " + docType + " -- NOT YET FINISHED", []);
+            }
+        },
+        generateHtmlOpeningTags: function (elementType, elementAttributes)
+        {
+            if(elementType === "textNode")
+                return "";
+
+            var html = "";
+
+            // generate <elementType attribute[0].name="attribute[0].value" ... attribute[N].name="attribute[N].value">
+            // <elementType
+            html += "&#60;" + elementType;
+            for (var i = 0; i < elementAttributes.length; i++)
+            {
+                html += " " + elementAttributes[i].name + "=\"" + elementAttributes[i].value + "\"";
+            }
+            // >
+            html += "&#62;";
+
+            return html;
+        },
+        generateHtmlClosingTags: function (elementType)
+        {
+            if(elementType === "textNode")
+                return "";
+
+            var html = "";
+            html += "&#60;&#47;" + elementType + "&#62;";
+            return html;
+        },
+        generateHtmlElement: function(element)
+        {
+            try
+            {
+                var html = "";
+
+                html += "<div>" + this.generateHtmlOpeningTags(element.type, element.attributes);
+
+                if (element.type === "script")
+                {
+                    html += "<br>" + FBL.Firecrow.CodeMarkupGenerator.generateHtml(element.pathAndModel.model);
+                }
+                else if (element.type === "style")
+                {
+                    html += "";
+                }
+                else
+                {
+                    if(element.textContent != undefined)
+                        html += element.textContent;
+
+                    for(var i=0; i < element.children.length; i++)
+                        html += this.generateHtmlElement(element.children[i]);
+
+                }
+
+                if (this.doesElementHaveClosingTags(element.type))
+                    html += this.generateHtmlClosingTags(element.type);
+                html += "</div>";
+
+                return html;
+            }
+            catch(e) { alert("Error while generating a html element: " + e); }
+        },
+        doesElementHaveClosingTags: function(elementType)
+        {
+          return !(elementType === "area"
+              || elementType === "base"
+              || elementType === "br"
+              || elementType === "basefont"
+              || elementType === "col"
+              || elementType === "frame"
+              || elementType ===  "hr"
+              || elementType === "img"
+              || elementType === "input"
+              || elementType === "meta"
+              || elementType === "link"
+              //|| elementType === "script"
+              || elementType === "param");
         }
     }
 }});

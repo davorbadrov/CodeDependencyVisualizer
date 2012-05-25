@@ -4,25 +4,69 @@ function clickHandler()
     var hoverMenu = null;
 
     var selectables = $(".Selectable");
-    var blockStatements = $(".BlockStatement");
-
-    for(var i = 0; i < blockStatements.length; i++)
-    {
-        //blockStatements[i].addEventListener("click", collapseBlock, false);
-    }
 
     for(var i = 0; i < selectables.length; i++)
     {
         selectables[i].addEventListener("click", stopEvent, false);
-        selectables[i].addEventListener("click", handleClick, false);
+        selectables[i].addEventListener("click", selectElement, false);
     }
 
-    function collapseBlock()
+    function toggleBlockCollapse()
     {
-        //this.innerHTML = "{...}";
+        var block = $(".BlockStatement", this.parentNode);
+
+        //for(var i = 0; i < this.children.length; i++)
+        //this.children[i].setAttribute("style", "display: none;");
+        //if(block.hasAttribute("style", "display: none;"))
+        //   block.setAttribute("style", "display: block;")
+        //else
+
+        if (block.getAttribute("style") == "display: none;")
+        {
+            block.setAttribute("style", "display: block;");
+            // remove the "{...}" child of this.parentNode
+            //this.parentNode.removeChild($(".CollapsedBlock", this.parentNode));
+            // buggy code
+            this.removeChild($(".CollapsedBlock", this));
+        }
+        else
+        {
+            block.setAttribute("style", "display: none;");
+
+            var collapsedBlock = document.createElement("span");
+            collapsedBlock.className = "CollapsedBlock";
+            collapsedBlock.innerHTML = "{...}";
+            console.log(this);
+            console.log(this.parentNode);
+            //this.parentNode.appendChild(collapsedBlock);
+            this.parentNode.insertBefore(collapsedBlock, this);
+        }
+
+        this.insertBefore(collapsedBlock, this.children[0]);
     }
 
-    function handleClick()
+    //createCollapseButtons();
+    // Create a collapse/decollapse button/div for each block statement
+    function createCollapseButtons()
+    {
+        var blockStatements = $(".BlockStatement");
+
+        for (var i = 0; i < blockStatements.length; i++)
+        {
+            var collapseButton = document.createElement("div");
+            // Unused
+            //collapseButton.id = "collapseButton";
+            // Used for style
+            collapseButton.className = "collapseButton";
+
+            collapseButton.addEventListener("click", toggleBlockCollapse, false);
+
+            blockStatements[i].parentNode.setAttribute("style", "position: relative");
+            blockStatements[i].parentNode.insertBefore(collapseButton, blockStatements[i]);
+        }
+    }
+
+    function selectElement()
     {
         // If there's a selected element, deselect it removing it's "selected" properties
         // so there can't be two or more selected elements at the same time
@@ -36,9 +80,33 @@ function clickHandler()
         currentlySelectedElement = this;
         addClass(currentlySelectedElement, "Selected");
 
-        createHoverMenu(this);
+        console.log(this);
+        console.log(this.structuralDependencies);
+        //showStructuralDependencies(this);
+        //showDataDependencies(this);
 
+        createHoverMenu(this);
     }
+
+    function showStructuralDependencies(element)
+    {
+        //var structuralDependency;
+        console.log(element.structuralDependencies);
+//        for(var i = 0; i < element.structuralDependencies.length; i++)
+//        {
+//            console.log(structuralDependency[i]);
+//
+//            //structuralDependency = $("#" + structuralDependency[i]);
+//            //addClass(structuralDependency, "StructuralDependency");
+//        }
+    }
+
+//    function showDataDependencies(element)
+//    {
+//
+//        //var dataDependency;
+//        //addClass("DataDependency");
+//    }
 
     /**
      * Dissallows multiple events

@@ -36,6 +36,11 @@ function removeClass(ele,cls)
     }
 }
 
+function getRandomInteger(min, max)
+{
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 /* onload event handler */
 function addLoadEvent(func) {
     var oldonload = window.onload;
