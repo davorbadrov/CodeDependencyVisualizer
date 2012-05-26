@@ -1279,7 +1279,7 @@ FBL.ns(function () { with (FBL) {
                 }
                 else if (element.type === "style")
                 {
-                    html += "";
+                    html += "<br>" + FBL.Firecrow.CodeMarkupGenerator.generateCSSRepresentation(element.pathAndModel.model);
                 }
                 else
                 {
@@ -1298,6 +1298,40 @@ FBL.ns(function () { with (FBL) {
                 return html;
             }
             catch(e) { alert("Error while generating a html element: " + e); }
+        },
+        generateCSSRepresentation: function(cssModel)
+        {
+            try
+            {
+                var html = "<div>";
+                var cssRules = "";
+                var rulesArray = [];
+                for(var i = 0; i < cssModel.rules.length; i++)
+                {
+                    cssRules = cssModel.rules[i].cssText.replace(cssModel.rules[i].selector, "");
+
+                    cssRules = cssRules.replace("{", "");
+                    cssRules = cssRules.replace("}", "");
+                    while(cssRules[0] === " ")
+                        cssRules = cssRules.replace(" ", "");
+
+                    html += cssModel.rules[i].selector + "<br>";
+                    html += "{ <br>";
+
+                    rulesArray = cssRules.split("; ");
+
+                    for(var j = 0; j < rulesArray.length; j++)
+                    {
+                        if(rulesArray[j] != "")
+                            html += rulesArray[j] + ";<br>";
+                    }
+                    html += "} <br>";
+                }
+                
+                html += "</div>";
+                return html;
+            }
+            catch(e) { alert("Error while generating HTML representation of CSS: " + e); }
         },
         doesElementHaveClosingTags: function(elementType)
         {

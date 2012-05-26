@@ -5,7 +5,7 @@ function clickHandler()
 
     var selectables = $(".Selectable");
     var scripts = $(".script");
-    var styles= $(".styles");
+    var styles= $(".style");
 
     for(var i = 0; i < selectables.length; i++)
     {
@@ -24,6 +24,19 @@ function clickHandler()
     else
     {
         scripts.addEventListener("click", toggleShow, false);
+    }
+
+    if(styles.length != undefined)
+    {
+        for(var i = 0; i < styles.length; i++)
+        {
+            styles[i].addEventListener("click", toggleShow, false);
+           // styles[i].addEventListener("click", stopEvent, false);
+        }
+    }
+    else
+    {
+        styles.addEventListener("click", toggleShow, false);
     }
 
     function toggleShow()
