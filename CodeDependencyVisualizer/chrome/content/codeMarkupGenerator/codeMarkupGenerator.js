@@ -922,7 +922,7 @@ FBL.ns(function () { with (FBL) {
                     html += this.generateFromVariableDeclarator(currentDeclarator);
                 }
 
-                html += this.getEndElementHtml("span");
+                html += ";" + this.getEndElementHtml("span");
 
                 return html;
             }
@@ -1120,7 +1120,8 @@ FBL.ns(function () { with (FBL) {
                 || astHelper.isBlockStatement(currentElement)
                 || astHelper.isEmptyStatement(currentElement)
                 || astHelper.isReturnStatement(currentElement)
-                || astHelper.isExpressionStatement(currentElement))
+                || astHelper.isExpressionStatement(currentElement)
+                || astHelper.isVariableDeclaration(currentElement))
                 {
                     html = "";
                 }
@@ -1270,7 +1271,7 @@ FBL.ns(function () { with (FBL) {
             {
                 var html = "";
 
-                html += "<div>" + this.generateHtmlOpeningTags(element.type, element.attributes);
+                html += "<div class=\"" + element.type +"\">" + this.generateHtmlOpeningTags(element.type, element.attributes);
 
                 if (element.type === "script")
                 {

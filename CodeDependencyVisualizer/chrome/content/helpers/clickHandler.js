@@ -4,11 +4,40 @@ function clickHandler()
     var hoverMenu = null;
 
     var selectables = $(".Selectable");
+    var scripts = $(".script");
+    var styles= $(".styles");
 
     for(var i = 0; i < selectables.length; i++)
     {
         selectables[i].addEventListener("click", stopEvent, false);
         selectables[i].addEventListener("click", selectElement, false);
+    }
+
+    if(scripts.length != undefined)
+    {
+        for(var i = 0; i < scripts.length; i++)
+        {
+            scripts[i].addEventListener("click", toggleShow, false);
+            scripts[i].addEventListener("click", stopEvent, false);
+        }
+    }
+    else
+    {
+        scripts.addEventListener("click", toggleShow, false);
+    }
+
+    function toggleShow()
+    {
+        if (this.children[0].getAttribute("style") == "display: none;")
+        {
+            for(var i = 0; i < this.children.length; i++)
+                this.children[i].setAttribute("style", "display: block;");
+        }
+        else //null when not set or display: block; when set
+        {
+            for(var i = 0; i < this.children.length; i++)
+                this.children[i].setAttribute("style", "display: none;");
+        }
     }
 
     function toggleBlockCollapse()
