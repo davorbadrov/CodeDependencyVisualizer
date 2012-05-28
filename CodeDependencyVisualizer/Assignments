@@ -7,7 +7,6 @@
 
     currentElement.parent = parentElement;
  }
-
  - na temelju  toga generirat prijelaze u novi red
 
  - obojat html, atribute html-a, css (samo selektore)

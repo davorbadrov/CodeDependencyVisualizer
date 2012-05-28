@@ -22,28 +22,30 @@ function codeFormatHandler()
                     blocks[i].children[j].setAttribute("style", "padding-left: 20px;");
             }
         }
-
-//        // REFACTORING NEEDED
-//        for (var x = 0; x < switches.length; x++)
-//        {
-//            for (var y = 0; y < switches[x].children.length; y++)
-//            {
-//                if(!hasClass(switches[x].children[y], "Bracket"))
-//                    switches[x].children[y].setAttribute("style", "padding-left: 20px;");
-//            }
-//        }
     }
 
-//    function createLineNumbers()
-//    {
-//        var lineNumberDiv = document.createElement("div");
-//        lineNumberDiv.id = "lineNumberContainer";
-//
-//        for (var i = 1; i <= numberOfLines; i++)
-//        {
-//            lineNumberDiv.innerHTML += i + "<br>";
-//        }
-//
-//        document.body.insertBefore(lineNumberDiv, document.body.firstChild);
-//    }
+    function createElementAttributes(elementClass, elementId, elementStyle)
+    {
+        if(elementStyle == null)
+        {
+            return {class: elementClass, id: elementId};
+        }
+        else
+        {
+            return {class: elementClass, id: elementId, style: elementStyle};
+        }
+    }
+
+    function createLineNumbers()
+    {
+        var lineNumberDiv = document.createElement("div");
+        lineNumberDiv.id = "lineNumberContainer";
+
+        for (var i = 1; i <= numberOfLines; i++)
+        {
+            lineNumberDiv.innerHTML += i + "<br>";
+        }
+
+        document.body.insertBefore(lineNumberDiv, document.body.firstChild);
+    }
 }

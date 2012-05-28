@@ -83,7 +83,6 @@
     <script src="helpers/miscHelper.js"></script>
     <script src="codeMarkupGenerator/testData.js"></script>
     <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
-    <script src="codeMarkupGenerator/indentationManager.js"></script>
 
     <script class="sourceCode00" type="text/codeSourceTemplate">
 {
@@ -388,20 +387,28 @@ function testMe(param1)
     </script>
 
 <script class="sourceCode13" type="text/codeSourceTemplate">
-    var a = 3;
-    
-    for(var i = 0; i < 10; i++)
+    if (x == a)
     {
-        for(var j = 0; j < 10; j++)
+        alert("=");
+    }
+    else if(x > a)
+    {
+        alert(">");
+    }
+    else
+    {
+        alert("<");
+    }
+
+    if(x == a)
+    {
+        var b = !x;
+        if(b < a)
         {
-            a++;
-    
-            if(a < 10)
-            {
-                a++;
-            }
+            alert("foo");
         }
     }
+
 </script>
 </head>
 <body>
