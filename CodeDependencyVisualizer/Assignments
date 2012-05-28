@@ -1,15 +1,19 @@
-1. imena klasa generiranog html-a pribaciti na imena čvorova AST-a (ki šta je na ForStatementu)
-   pribaciti sve spanove u divove za elemente koji su na razini statementa (i onda update paddinga)
+- Napraviti kod učitavanja modela da postavi roditelje i djecu
+ function handler(currentElement, attributeName, parentElement)
+ {
+    if(parentElement.children == null) { parentElement.children = [];}
 
+    parentElement.children.push(currentElement);
 
+    currentElement.parent = parentElement;
+ }
 
-1. Ubacivanje ";"
-2. Expression statment triba biti div
-3. Dodati testove za sve programske elemente (condition, for, for in, ..., logički,...)
-4. Generiranje linija koda; (odredi visinu kontenjera, podili za visionon linije - broj linija - toliiko ih generirat)
-5. Kod svih blokovskih elementata (funkcije, petlje, grananja, with...) dodat ikonu da ga sakriva, pokaže
+ - na temelju  toga generirat prijelaze u novi red
 
-- LINIJE
-- INDENTACIJA
-- SELEKTIRAT SVE ELEMENTE - OK
-- KAD KLIKNEŠ NA ELEMENT - STVORITI Hover-menu (za početak može stati samo u kutu stranice) i da unutra možemo staviti ikone - OK više-manje
+ - obojat html, atribute html-a, css (samo selektore)
+
+ - ubaciti id-ove i za html čvorove
+
+ - napraviti povezivanje ovisnosti
+    - i samo od tog elementa
+    - i kad se klikne na neki botun da može odabrat i njegove ovisnosti i sve ostale ovisnosti
