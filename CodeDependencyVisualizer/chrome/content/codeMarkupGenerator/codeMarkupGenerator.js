@@ -1160,13 +1160,13 @@ FBL.ns(function () { with (FBL) {
                 var html = "";
 
                 // generate the HTML Document Type
-                html += "<div>" + this.generateHtmlDocumentTypeTags(root.docType) + "</div>";
+                html += "<div class=\"documentType\">" + this.generateHtmlDocumentTypeTags(root.docType) + "</div>";
 
                 // generate the <html></html> tags and everything in between
                 html += "<div>" + this.generateHtmlOpeningTags(root.htmlElement.type, root.htmlElement.attributes);
 
                 // generate <head>
-                html += "<div>" + this.generateHtmlOpeningTags(root.htmlElement.children[0].type, root.htmlElement.children[0].attributes);
+                html += "<div class=\"head\">" + this.generateHtmlOpeningTags(root.htmlElement.children[0].type, root.htmlElement.children[0].attributes);
 
                 // generate <head> children
                 for (var i = 0; i < root.htmlElement.children[0].children.length; i++)
