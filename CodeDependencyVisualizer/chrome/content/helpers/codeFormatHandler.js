@@ -5,7 +5,7 @@ function codeFormatHandler()
     // for font-size: 14px, one line is 17 px high
     var lineHeight = 17;
     var numberOfLines = codeHtmlContainer.offsetHeight/lineHeight;
-    createLineNumbers();
+//    createLineNumbers();
     createLineIndentation();
 
     function createLineIndentation()
@@ -34,16 +34,16 @@ function codeFormatHandler()
 //        }
     }
 
-    function createLineNumbers()
-    {
-        var lineNumberDiv = document.createElement("div");
-        lineNumberDiv.id = "lineNumberContainer";
-
-        for (var i = 1; i <= numberOfLines; i++)
-        {
-            lineNumberDiv.innerHTML += i + "<br>";
-        }
-
-        document.body.insertBefore(lineNumberDiv, document.body.firstChild);
-    }
+//    function createLineNumbers()
+//    {
+//        var lineNumberDiv = document.createElement("div");
+//        lineNumberDiv.id = "lineNumberContainer";
+//
+//        for (var i = 1; i <= numberOfLines; i++)
+//        {
+//            lineNumberDiv.innerHTML += i + "<br>";
+//        }
+//
+//        document.body.insertBefore(lineNumberDiv, document.body.firstChild);
+//    }
 }

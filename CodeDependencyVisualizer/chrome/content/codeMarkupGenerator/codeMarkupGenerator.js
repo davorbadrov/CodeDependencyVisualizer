@@ -15,7 +15,7 @@ FBL.ns(function () { with (FBL) {
             {
                 if(astHelper.isProgram(element))
                 {
-                    var html = "";
+                    var html = "<div class=\"jsContainer\">";
 
                     if(element.body != null)
                     {
@@ -29,6 +29,7 @@ FBL.ns(function () { with (FBL) {
                         }
                     }
 
+                    html += "</div>";
                     return html;
                 }
 
@@ -1303,7 +1304,7 @@ FBL.ns(function () { with (FBL) {
         {
             try
             {
-                var html = "<div>";
+                var html = "<div class=\"cssContainer\">";
                 var cssRules = "";
                 var rulesArray = [];
                 for(var i = 0; i < cssModel.rules.length; i++)
@@ -1323,7 +1324,7 @@ FBL.ns(function () { with (FBL) {
                     for(var j = 0; j < rulesArray.length; j++)
                     {
                         if(rulesArray[j] != "")
-                            html += rulesArray[j] + ";<br>";
+                            html += "<span class=\"cssRule\">" + rulesArray[j] + ";</span><br>";
                     }
                     html += "} <br>";
                 }
