@@ -922,7 +922,7 @@ FBL.ns(function () { with (FBL) {
                     html += this.generateFromVariableDeclarator(currentDeclarator);
                 }
 
-                html += ";" + this.getEndElementHtml("span");
+                html += ";" + this.getEndElementHtml("span") + "<br>";
 
                 return html;
             }
@@ -1327,7 +1327,7 @@ FBL.ns(function () { with (FBL) {
                     }
                     html += "} <br>";
                 }
-                
+
                 html += "</div>";
                 return html;
             }
