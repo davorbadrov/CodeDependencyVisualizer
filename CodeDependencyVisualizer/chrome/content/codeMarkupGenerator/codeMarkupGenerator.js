@@ -512,7 +512,13 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isObjectExpression(objectExpression)) { alert("Invalid element when generating object expression html code!"); return ""; }
 
-                var html = this.getStartElementHtml("div", {class: astHelper.CONST.EXPRESSION.ObjectExpression +" Selectable",  style:"display: inline;", id: "astElement" + objectExpression.astId});
+                var html = this.getStartElementHtml("div", {class: astHelper.CONST.EXPRESSION.ObjectExpression +" Selectable",  style: this.getStyle(objectExpression), id: "astElement" + objectExpression.astId});
+
+                if(!objectExpression.properties.length == 0)
+                for(var i = 0; i < objectExpression.children.length; i++)
+                {
+                    console.log(objectExpression.children[i]);
+                }
 
                 html += "{";
                 // if objectExpression kind is "init" and has no properties, e.g.: object = {}
@@ -520,15 +526,17 @@ FBL.ns(function () { with (FBL) {
                 // if objectExpression kind is "init" and has properties, e.g.: object = {x: 1, y: 2}
                 else if(objectExpression.properties[0].kind == "init")
                 {
-                    html += "<br>";
+                    if (objectExpression.properties.length > 2) html += "<br>";
                     for(var i = 0; i < objectExpression.properties.length; i++)
                     {
-                        if(i != 0) html += ",<br>";
+
+                        if(i != 0 && objectExpression.properties.length > 2) html += ",<br>";
+                        else if(i != 0) html += ", ";
 
                         html += this.generateHtml(objectExpression.properties[i].key) + ": "
                             + this.generateHtml(objectExpression.properties[i].value);
                     }
-                    html += "<br>";
+                    if (objectExpression.properties.length > 2) html += "<br>";
                 }
 
                 /** if objectExpression kind is "get" or "set", e.g.:
@@ -938,7 +946,7 @@ FBL.ns(function () { with (FBL) {
                 }
                 else
                 {
-                    html += "<div class=\"testing\" style=\"display: inline;\">;</div>" + this.getEndElementHtml("span") + "<br>";
+                    html += ";" + this.getEndElementHtml("span") + "<br>";
                 }
 
                 return html;
@@ -1138,7 +1146,7 @@ FBL.ns(function () { with (FBL) {
         {
             try
             {
-                var html = "";
+                var html = "<div class='html'>";
 
                 // generate the HTML Document Type
                 html += "<div class=\"documentType\">" + this.generateHtmlDocumentTypeTags(root.docType) + "</div>";
@@ -1171,6 +1179,8 @@ FBL.ns(function () { with (FBL) {
                 // generate </html>
                 html += this.generateHtmlClosingTags(root.htmlElement.type) + "</div>";
 
+                html += "</div>";
+
                 return html;
             }
             catch(e)
@@ -1182,39 +1192,39 @@ FBL.ns(function () { with (FBL) {
         {
             if (docType == "")
             {
-                return this.generateHtmlOpeningTags("&#33;DOCTYPE html", []);
+                return "&#60;&#33;DOCTYPE html&#62;";
             }
             else if (docType === "http://www.w3.org/TR/html4/strict.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"', []);
+                return '&#60;&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"&#62;';
             }
             else if (docType === "http://www.w3.org/TR/html4/loose.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"', []);
+                return '&#60;&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"&#62;';
             }
             else if (docType === "http://www.w3.org/TR/html4/frameset.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd"', []);
+                return '&#60;&#33;DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd"&#62;';
             }
             else if (docType === "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"', []);
+                return '&#60;&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&#62;';
             }
             else if (docType === "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"', []);
+                return '&#60;&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&#62;';
             }
             else if (docType === "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"', []);
+                return '&#60;&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd"&#62;';
             }
             else if (docType === "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd")
             {
-                return this.generateHtmlOpeningTags('&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"', []);
+                return '&#60;&#33;DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"&#62;';
             }
             else
             {
-                return this.generateHtmlOpeningTags("&#33;DOCTYPE html " + docType + " -- NOT YET FINISHED", []);
+                return "&#60;&#33;DOCTYPE html " + docType + " -- NOT YET FINISHED";
             }
         },
         generateHtmlOpeningTags: function (elementType, elementAttributes)
@@ -1222,14 +1232,17 @@ FBL.ns(function () { with (FBL) {
             if(elementType === "textNode")
                 return "";
 
-            var html = "";
+            var html = '';
 
             // generate <elementType attribute[0].name="attribute[0].value" ... attribute[N].name="attribute[N].value">
             // <elementType
-            html += "&#60;" + elementType;
+            html += "&#60;" + '<span class="htmlTag">' + elementType + '</span>';
             for (var i = 0; i < elementAttributes.length; i++)
             {
-                html += " " + elementAttributes[i].name + "=\"" + elementAttributes[i].value + "\"";
+                html += " " + '<span class="htmlAttributeName">' + elementAttributes[i].name + '</span>=';
+                html += '"' + '<span class="htmlAttributeValue">' + elementAttributes[i].value + '"</span>';
+
+//                html += " " + elementAttributes[i].name + "=\"" + elementAttributes[i].value + "\"";
             }
             // >
             html += "&#62;";
@@ -1242,7 +1255,7 @@ FBL.ns(function () { with (FBL) {
                 return "";
 
             var html = "";
-            html += "&#60;&#47;" + elementType + "&#62;";
+            html += '&#60;<span class="htmlTag">&#47;' + elementType + "</span>&#62;";
             return html;
         },
         generateHtmlElement: function(element)
@@ -1265,12 +1278,12 @@ FBL.ns(function () { with (FBL) {
                         currentElement.parent = parentElement.type;
                     });
 
-                    html += "<br>" + this.generateHtml(element.pathAndModel.model);
+                    html += this.generateHtml(element.pathAndModel.model);
 
                 }
                 else if (element.type === "style")
                 {
-                    html += "<br>" + FBL.Firecrow.CodeMarkupGenerator.generateCSSRepresentation(element.pathAndModel.model);
+                    html += FBL.Firecrow.CodeMarkupGenerator.generateCSSRepresentation(element.pathAndModel.model);
                 }
                 else
                 {
@@ -1278,7 +1291,7 @@ FBL.ns(function () { with (FBL) {
                         html += element.textContent;
 
                     for(var i=0; i < element.children.length; i++)
-                        html += this.generateHtmlElement(element.children[i]);
+                        html += '<span class="htmlContent">' + this.generateHtmlElement(element.children[i]) + '</span>';
 
                 }
 
@@ -1306,7 +1319,7 @@ FBL.ns(function () { with (FBL) {
                     while(cssRules[0] === " ")
                         cssRules = cssRules.replace(" ", "");
 
-                    html += cssModel.rules[i].selector + "<br>";
+                    html += '<span class="cssSelector">' + cssModel.rules[i].selector + "</span><br>";
                     html += "{ <br>";
 
                     rulesArray = cssRules.split("; ");
@@ -1350,6 +1363,19 @@ FBL.ns(function () { with (FBL) {
                 || currentElement.parent == "SwitchCase")
             {
                 return "padding-left: 20px";
+            }
+            if (currentElement.type == "ObjectExpression")
+            {
+                console.log(currentElement.parent);
+
+//                if(currentElement.parent == "VariableDeclarator" && currentElement.properties.length > 1)
+//                {
+//                    return "display: block"
+//                }
+//                else
+//                {
+//                    return "display: inline";
+//                }
             }
         }
     }

@@ -17,26 +17,26 @@ function clickHandler()
     {
         for(var i = 0; i < scripts.length; i++)
         {
-            scripts[i].addEventListener("click", toggleShow, false);
+            scripts[i].addEventListener("click", toggleScripts, false);
             scripts[i].addEventListener("click", stopEvent, false);
         }
     }
     else
     {
-        scripts.addEventListener("click", toggleShow, false);
+        scripts.addEventListener("click", toggleScripts, false);
     }
 
     if(styles.length != undefined)
     {
         for(var i = 0; i < styles.length; i++)
         {
-            styles[i].addEventListener("click", toggleShow, false);
+            styles[i].addEventListener("click", toggleStyles, false);
            // styles[i].addEventListener("click", stopEvent, false);
         }
     }
     else
     {
-        styles.addEventListener("click", toggleShow, false);
+        styles.addEventListener("click", toggleStyles, false);
     }
 
     function toggleShow()
@@ -53,6 +53,33 @@ function clickHandler()
         }
     }
 
+    function toggleStyles()
+    {
+        var codeContainer = $(".cssContainer", this);
+
+        if (codeContainer.getAttribute("style") == "display: none")
+        {
+            codeContainer.setAttribute("style", "display: block");
+        }
+        else //style is null when not set or when set it's display: block;
+        {
+            codeContainer.setAttribute("style", "display: none");
+        }
+    }
+
+    function toggleScripts()
+    {
+        var codeContainer = $(".jsContainer", this);
+
+        if (codeContainer.getAttribute("style") == "display: none")
+        {
+            codeContainer.setAttribute("style", "display: block");
+        }
+        else //style is null when not set or when set it's display: block;
+        {
+            codeContainer.setAttribute("style", "display: none");
+        }
+    }
     function toggleBlockCollapse()
     {
         var block = $(".BlockStatement", this.parentNode);
