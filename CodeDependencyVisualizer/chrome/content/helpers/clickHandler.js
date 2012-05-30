@@ -6,11 +6,26 @@ function clickHandler()
     var selectables = $(".Selectable");
     var scripts = $(".script");
     var styles= $(".style");
+    var links = $(".link");
 
     for(var i = 0; i < selectables.length; i++)
     {
         selectables[i].addEventListener("click", stopEvent, false);
         selectables[i].addEventListener("click", selectElement, false);
+    }
+
+    if (links.length != undefined)
+    {
+        for(var i = 0; i < scripts.length; i++)
+        {
+            links[i].addEventListener("click", toggleStyles, false);
+            links[i].addEventListener("click", stopEvent, false);
+        }
+    }
+    else
+    {
+        links.addEventListener("click", toggleStyles, false);
+        links.addEventListener("click", stopEvent, false);
     }
 
     if(scripts.length != undefined)
@@ -24,6 +39,7 @@ function clickHandler()
     else
     {
         scripts.addEventListener("click", toggleScripts, false);
+        scripts.addEventListener("click", stopEvent, false);
     }
 
     if(styles.length != undefined)

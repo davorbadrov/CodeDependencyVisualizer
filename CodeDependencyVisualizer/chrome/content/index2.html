@@ -2,143 +2,7 @@
 <html>
 <head>
     <title>Testing Dependency Visualizer</title>
-    <style>
-        .script > *
-        {
-            color: black;
-        }
-        .style > *
-        {
-            color: black;
-        }
-        .html
-        {
-            color: #00008b;
-        }
-        .htmlTag
-        {
-            color: blue;
-        }
-        .htmlAttributeName
-        {
-            color: #00008b;
-        }
-        .htmlAttributeValue
-        {
-            color: red;
-        }
-        .htmlContent
-        {
-            color: black;
-        }
-        .cssSelector
-        {
-            color: #00008b;
-        }
-        .keyword{ color: #00008b;}
-        .identifier { font-weight: normal;}
-        .literal { color: red; }
-        .string { color: red; }
-        .number { color: #ff4500; }
-        .lineContainer {
-            padding: 0 4px 0 6px;
-            border-right: 2px solid #6CE26C;
-            text-align: right;
-            clear: both;
-            float: left;
-        }
-        #codeHtmlContainer {
-            padding-left: 10px;
-            float: left;
-        }
-        .jsContainer
-        {
-            padding-left: 20px;
-        }
-        .documentType
-        {
-            color: #c3c4c2;
-        }
-        .cssContainer
-        {
-            padding-left: 20px;
-        }
-        .cssRule
-        {
-            padding-left: 20px;
-        }
-        #lineNumberContainer
-        {
-            border-right: 2px solid #6CE26C;
-            padding: 0 4px 0 6px;
-            text-align: right;
-            float: left;
-            width: 20px;
-        }
-        body
-        {
-            font-family: Consolas;
-            font-size: 14px;
-        }
-
-        .Selected
-        {
-            background-color: #c6ff61;
-        }
-        .hoverMenu
-        {
-            position:fixed;
-            right: 50px;
-            top: 50px;
-            z-index: 100;
-
-            border: 1px solid black;
-            background: #b8ff3f;
-            font-size: 80%;
-            padding: 8px;
-            width: 230px;
-        }
-        #button1
-        {
-            background: blue;
-        }
-        #button2
-        {
-            background: orange;
-        }
-        #button3
-        {
-            background: red;
-        }
-        #button4
-        {
-            background: yellow;
-        }
-        .buttons
-        {
-            width: 150px;
-            height: 150px;
-            background: #f5f5f5;
-        }
-        .hoverMenuButton
-        {
-            margin: 10px;
-            background: #f5f5f5;
-            width: 50px;
-            height: 50px;
-        }
-        .collapseButton
-        {
-            float: left;
-            position: relative;
-            left: -8px;
-            top: 2px;
-            width: 12px;
-            height: 12px;
-            background-color: #5f9ea0;
-        }
-        .clearer { clear: both;}
-    </style>
+    <link href="../skin/classic/style.css" rel="Stylesheet" type="text/css">
     <script src="initFb.js"></script>
     <script src="helpers/valueTypeHelper.js"></script>
     <script src="helpers/ASTHelper.js"></script>
@@ -152,7 +16,7 @@
 <body>
     <div id="codeHtmlContainer"></div>
     <script>
-        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtmlRepresentation(testData2[0]);
+        document.getElementById("codeHtmlContainer").innerHTML = FBL.Firecrow.CodeMarkupGenerator.generateHtmlRepresentation(testData2[1]);
     </script>
 </body>
 </html>
