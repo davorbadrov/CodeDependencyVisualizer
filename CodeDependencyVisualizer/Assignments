@@ -16,3 +16,10 @@
  - napraviti povezivanje ovisnosti
     - i samo od tog elementa
     - i kad se klikne na neki botun da može odabrat i njegove ovisnosti i sve ostale ovisnosti
+ - linije koda ?
+ - Firebug - pogledat na: http://www.janodvarko.cz/blog/
+                ili na google groups firebug
+           - kako dodat novi tab
+           - i ubaciti ovo ka sadržaj tog taga
+           - na vrhu taba staviti izbornik da možeš birat vanjske skripte i kad je selektiraš da se u sadržaju prikaže kod skripte
+
