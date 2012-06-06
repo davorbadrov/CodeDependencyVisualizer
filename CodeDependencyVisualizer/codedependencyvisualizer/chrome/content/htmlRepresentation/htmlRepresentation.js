@@ -172,6 +172,20 @@ var htmlRepresentation =
                     }
                 }
 
+                // -------------------------------
+
+                FBL.Firecrow.ASTHelper.traverseAst(element.pathAndModel.model, function(currentElement, attributeName, parentElement)
+                {
+                    if (currentElement.type == undefined) { return; }
+                    if(parentElement.children == null) { parentElement.children = [];}
+
+                    parentElement.children.push(currentElement.type);
+
+                    currentElement.parent = parentElement.type;
+                });
+
+                // -------------------------------
+
                 if (isExternScript)
                 {
                     this.javascript.push(
@@ -186,15 +200,6 @@ var htmlRepresentation =
                 {
                     html += FBL.Firecrow.CodeMarkupGenerator.generateHtml(element.pathAndModel.model);
                 }
-//                FBL.Firecrow.ASTHelper.traverseAst(element.pathAndModel.model, function(currentElement, attributeName, parentElement)
-//                {
-//                    if (currentElement.type == undefined) { return; }
-//                    if(parentElement.children == null) { parentElement.children = [];}
-//
-//                    parentElement.children.push(currentElement.type);
-//
-//                    currentElement.parent = parentElement.type;
-//                });
 
             }
             else if (element.type === "link")

@@ -578,6 +578,7 @@ FBL.ns(function () { with (FBL) {
 
                 if (objectExpression.properties.length == 0)
                 {
+
                     _isEmptyObject = true;
                 }
                 else
@@ -588,18 +589,27 @@ FBL.ns(function () { with (FBL) {
                     }
                     for(var i = 0; i < objectExpression.properties.length; i++)
                     {
+
+                        console.log(objectExpression);
+
                         if (objectExpression.properties[i].kind == "get"
                             || objectExpression.properties[i].kind == "set")
                         {
                             _hasGettersOrSetters = true;
                         }
 
-                        if (objectExpression.properties[i].children[1].type == "FunctionExpression")
+                        console.log(objectExpression.properties[i].children);
+
+                        for (var j = 0; j < objectExpression.properties[i].children.length; j++)
                         {
-                            _hasFunctionExpressions = true;
+                            if (objectExpression.properties[i].children[j] == "FunctionExpression")
+                            {
+                                _hasFunctionExpressions = true;
+                            }
                         }
                     }
                 }
+
 
                 if (_isEmptyObject == true
                     || (_hasMoreThanTwoProperties == false
@@ -670,7 +680,8 @@ FBL.ns(function () { with (FBL) {
                 html += this.getEndElementHtml("div");
                 return html;
             }
-            catch(e) { alert("Error when generating HTML from object expression:" + e); }
+            catch(e) { alert("Error when generating HTML from object expression:" + e);
+            }
         },
 
         generateFromIfStatement: function(ifStatement)
@@ -1243,14 +1254,6 @@ FBL.ns(function () { with (FBL) {
             catch(e) { alert("Error when generating end element html: " + e); }
         },
 
-        generateStartLineHtml: function(currentElement)
-        {
-            try
-            {
-                return " ";
-            }
-            catch(e) { alert("Error when generating start line element formatting html: " + e); }
-        },
         generateCodeContainer: function(content)
         {
             try
