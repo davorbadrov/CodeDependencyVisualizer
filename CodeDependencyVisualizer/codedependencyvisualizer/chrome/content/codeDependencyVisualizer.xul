@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+    <!--         SCRIPTS     -->
+    <!--
+          firebug won't work w/ this included
+          <script src="chrome://codedependencyvisualizer/content/initFb.js" type="application/x-javascript"/>
+    -->
+
+    <script src="chrome://codedependencyvisualizer/content/helpers/valueTypeHelper.js" type="application/x-javascript"/>
+    <script src="chrome://codedependencyvisualizer/content/helpers/ASTHelper.js" type="application/x-javascript"/>
+
+    <script src="chrome://codedependencyvisualizer/content/helpers/clickHandler.js" type="application/x-javascript"/>
+    <script src="chrome://codedependencyvisualizer/content/helpers/dependencies.js" type="application/x-javascript"/>
+    <script src="chrome://codedependencyvisualizer/content/helpers/codeFormatHandler.js" type="application/x-javascript"/>
+    <script src="chrome://codedependencyvisualizer/content/helpers/miscHelper.js" type="application/x-javascript"/>
+
+    <script src="chrome://codedependencyvisualizer/content/codeMarkupGenerator/testData.js" type="application/x-javascript"/>
+    <script src="chrome://codedependencyvisualizer/content/codeMarkupGenerator/codeMarkupGenerator.js" type="application/x-javascript"/>
+
+    <script src="chrome://codedependencyvisualizer/content/htmlRepresentation/dependencies.js" type="application/x-javascript"/>
+    <script src="chrome://codedependencyvisualizer/content/htmlRepresentation/inputManager.js" type="application/x-javascript"/>
+
+    <script src="chrome://codedependencyvisualizer/content/htmlRepresentation/htmlRepresentation.js" type="application/x-javascript"/>
+
+    <script src="chrome://codedependencyvisualizer/content/codeDependencyVisualizer.js" type="application/x-javascript"/>
+
+
+    <!--        COMMANDS       -->
+    <commandset id="mainCommandSet">
+        <command id="cmd_hwHtmlButton"
+                 oncommand="Firebug.CodeDependencyModule.onHtmlButton()" />
+
+        <command id="cmd_hwTestButton1"
+                 oncommand="Firebug.CodeDependencyModule.onTestButton1()" />
+
+        <command id="cmd_hwTestButton2"
+                 oncommand="Firebug.CodeDependencyModule.onTestButton2()" />
+
+        <command id="cmd_hwClearButton"
+                 oncommand="Firebug.CodeDependencyModule.onClearButton()" />
+    </commandset>
+
+    <!--        BUTTONS         -->
+    <toolbar id="fbToolbar" align="center">
+        <hbox id="fbToolbarInner" insertbefore="fbDetachButton" flex="1"
+              align="center">
+            <hbox id="fbFirebugExtensionButtons">
+                <toolbarbutton id="hwHtmlButton"
+                               label="HTML" class="toolbar-text-button"
+                               tooltiptext="Click for HTML display." command="cmd_hwHtmlButton" />
+            </hbox>
+
+            <hbox id="fbFirebugExtensionButtons">
+                <toolbarbutton id="hwTestButton1"
+                               label="Test1" class="toolbar-text-button"
+                               tooltiptext="Testing purposes." command="cmd_hwTestButton1" />
+            </hbox>
+
+            <hbox id="fbFirebugExtensionButtons">
+                <toolbarbutton id="hwTestButton2"
+                               label="Test2" class="toolbar-text-button"
+                               tooltiptext="Testing purposes." command="cmd_hwTestButton2" />
+            </hbox>
+
+            <hbox id="fbFirebugExtensionButtons">
+                <toolbarbutton id="hwClearButton"
+                               label="Clear" class="toolbar-text-button"
+                               tooltiptext="Click to clear the panel" command="cmd_hwClearButton" />
+            </hbox>
+        </hbox>
+    </toolbar>
+
+
+</overlay>
