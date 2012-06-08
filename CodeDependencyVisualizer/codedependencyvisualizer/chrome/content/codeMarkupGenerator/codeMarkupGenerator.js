@@ -127,6 +127,8 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isFunction(functionDecExp)) { alert("Invalid Element when generating function html code!"); }
 
+                console.log(functionDecExp);
+
                 var _class = functionDecExp.type + " node";
                 var _id = "astElement" + this.formatId(functionDecExp.nodeId);
                 var _style = this.getStyle(functionDecExp);
@@ -591,15 +593,11 @@ FBL.ns(function () { with (FBL) {
                     for(var i = 0; i < objectExpression.properties.length; i++)
                     {
 
-                        console.log(objectExpression);
-
                         if (objectExpression.properties[i].kind == "get"
                             || objectExpression.properties[i].kind == "set")
                         {
                             _hasGettersOrSetters = true;
                         }
-
-                        console.log(objectExpression.properties[i].children);
 
                         for (var j = 0; j < objectExpression.properties[i].children.length; j++)
                         {
@@ -1277,6 +1275,12 @@ FBL.ns(function () { with (FBL) {
 
         getStyle: function(currentElement)
         {
+
+            if (currentElement.parent == "Property" && currentElement.type == "FunctionExpression")
+            {
+                return "display: inline";
+            }
+
             if( currentElement.parent == "ForStatement"
                 || currentElement.parent == "ForInStatement"
                 || currentElement.parent == "WhileStatement"
@@ -1286,6 +1290,8 @@ FBL.ns(function () { with (FBL) {
             {
                 return "padding-left: 20px";
             }
+
+
             if (currentElement.type == "ObjectExpression")
             {
 //                console.log(currentElement.parent);
