@@ -47,6 +47,7 @@ FBL.ns(function() { with (FBL) {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
             parentNode.innerHTML = htmlRepresentation.site;
+            InputManager.initialize();
         },
 
         onTestButton1: function()

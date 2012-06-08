@@ -26,13 +26,13 @@ var htmlRepresentation =
             html += this.generateHtmlDocumentTypeTags(root.docType);
 
             // generate the <html> oppening tags
-            html += '<div class="html" id="' + root.htmlElement.nodeId + '">'
+            html += '<div class="html node" id="astElement' + root.htmlElement.nodeId + '">'
                 + this.generateOpeningTags(root.htmlElement.type, root.htmlElement.attributes);
 
             // generate <head>
             var htmlHeadNode = root.htmlElement.childNodes[0];
 
-            html += '<div class="head indented" id="' + FBL.Firecrow.CodeMarkupGenerator.formatId(htmlHeadNode.nodeId) + '">'
+            html += '<div class="head indented node" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(htmlHeadNode.nodeId) + '">'
                 + this.generateOpeningTags(htmlHeadNode.type, htmlHeadNode.attributes);
 
             // generate <head> child nodes
@@ -46,7 +46,7 @@ var htmlRepresentation =
 
             // generate <body>
             var htmlBodyNode = root.htmlElement.childNodes[2];
-            html += '<div class="body indented" id="'
+            html += '<div class="body indented node" id="astElement'
                   + FBL.Firecrow.CodeMarkupGenerator.formatId(htmlBodyNode.nodeId) + '">'
                   + this.generateOpeningTags(htmlBodyNode.type, htmlBodyNode.attributes);
 
@@ -130,7 +130,7 @@ var htmlRepresentation =
         for (var i = 0; i < elementAttributes.length; i++)
         {
             html += " " + '<span class="htmlAttributeName">' + elementAttributes[i].name + '</span>=';
-            html += '"' + '<span class="htmlAttributeValue">' + elementAttributes[i].value + '"</span>';
+            html += '"' + '<span class="htmlAttributeValue">' + elementAttributes[i].value + '</span>"';
 
         }
         // generate >
@@ -155,13 +155,14 @@ var htmlRepresentation =
         {
             var html = "";
 
-            html += '<div class="' + element.type + " indented" + '" id="' + FBL.Firecrow.CodeMarkupGenerator.formatId(element.nodeId) + '">'
+            html += '<div class="' + element.type + " indented node" + '" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(element.nodeId) + '">'
                 + this.generateOpeningTags(element.type, element.attributes);
 
             if (element.type === "script")
             {
                 var isExternScript = false;
                 var _path = "";
+                var _filename = "";
 
                 for (var i = 0; i < element.attributes.length; i++)
                 {
@@ -188,10 +189,14 @@ var htmlRepresentation =
 
                 if (isExternScript)
                 {
+                    var reFilename = new RegExp("[^/]*$", "g");
+                    _filename = reFilename.exec(_path);
+                    _path = _path.replace(_filename, "");
+
                     this.javascript.push(
                         {
                             path: _path,
-                            name: "test",
+                            name: _filename,
                             representation: FBL.Firecrow.CodeMarkupGenerator.generateHtml(element.pathAndModel.model)
                         }
                     );
@@ -232,10 +237,14 @@ var htmlRepresentation =
 
                 if (isLinkStyleSheet)
                 {
+                    var reFilename = new RegExp("[^/]*$", "g");
+                    _filename = reFilename.exec(_path);
+                    _path = _path.replace(_filename, "");
+
                     this.cssStyle.push(
                         {
                             path: _path,
-                            name: "test",
+                            name: _filename,
                             representation: this.generateCSSRepresentation(element.pathAndModel.model)
                         }
                     );
@@ -277,7 +286,7 @@ var htmlRepresentation =
                 // if rule is @charset
                 if (cssModel.rules[i].cssText[0] == "@")
                 {
-                    html += '<div class="cssCharset" id="' + cssModel.rules[i].nodeId + '">' + cssModel.rules[i].cssText + '</div>';
+                    html += '<div class="cssCharset" id="astElement' + cssModel.rules[i].nodeId + '">' + cssModel.rules[i].cssText + '</div>';
                 }
                 else
                 {
@@ -288,7 +297,7 @@ var htmlRepresentation =
                     while(cssRules[0] === " ")
                         cssRules = cssRules.replace(" ", "");
 
-                    html += '<div class="cssRule" id="' + FBL.Firecrow.CodeMarkupGenerator.formatId(cssModel.rules[i].nodeId) +'">';
+                    html += '<div class="cssRule" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(cssModel.rules[i].nodeId) +'">';
                     //html += '<span class="cssSelector">' + cssModel.rules[i].selector + "</span><br>";
                     html += '<span class="cssSelector">' + cssModel.rules[i].selector + '</span><br>';
                     html += "{ <br>";

@@ -225,12 +225,14 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.BlockStatement + " node";
                 var _id = "astElement" + this.formatId(blockStatement.nodeId);
+                var _style = this.getStyle(blockStatement);
 
                 var html = this.getStartElementHtml(
                     "div",
                     {
                         class: _class,
-                        id: _id
+                        id: _id,
+                        style: _style
                     }
                 );
 
@@ -696,7 +698,7 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.IfStatement + " node";
                 var _id = "astElement" + this.formatId(ifStatement.nodeId);
-                var _style = "display: inline";
+                var _style = this.getStyle(ifStatement);
 
                 var html = this.getStartElementHtml("div", {class: _class, style: _style, id: _id})
                     + this.getElementHtml("span", {class:"keyword"}, "if")
@@ -709,7 +711,7 @@ FBL.ns(function () { with (FBL) {
 
                 if(ifStatement.alternate != null)
                 {
-                    html += this.getElementHtml("span", {class:"keyword"}, "else ")
+                    html += this.getElementHtml("span", {class:"keyword", style: "padding-left: 20px;"}, "else ")
                         + this.generateHtml(ifStatement.alternate);
                 }
 
@@ -776,8 +778,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.ForStatement + " node";
                 var _id = "astElement" + this.formatId(forStatement.nodeId);
+                var _style = this.getStyle(forStatement);
 
-                var html = this.getStartElementHtml("div", {class: _class, id: _id});
+                var html = this.getStartElementHtml("div", {class: _class, id: _id, style: _style});
 
                 html += this.getElementHtml("span", {class:"keyword"}, "for") + " "
                     + "(" + this.generateHtml(forStatement.init) + "; "
@@ -1286,9 +1289,17 @@ FBL.ns(function () { with (FBL) {
         getStyle: function(currentElement)
         {
 
+            var style = "";
+
+            if (currentElement.type == "BlockStatement"
+            && (currentElement.parent == "Function Expression"
+                || currentElement.parent == "FunctionDeclaration"))
+            {
+                return "padding-left: 20px";
+            }
             if (currentElement.parent == "Property" && currentElement.type == "FunctionExpression")
             {
-                return "display: inline";
+                style = "display: inline;";
             }
 
             if( currentElement.parent == "ForStatement"
@@ -1300,24 +1311,28 @@ FBL.ns(function () { with (FBL) {
                 || currentElement.parent == "BlockStatement"
                 || currentElement.parent == "TryStatement")
             {
-                return "padding-left: 20px";
+                style += "padding-left: 20px;";
+
+                if (!(currentElement.parent == "ForStatement" && currentElement.type == "VariableDeclaration"))
+                    style += "padding-left: 20px;";
             }
 
+            if (currentElement.type == "IfStatement")
+                style += "display: inline;";
 
             if (currentElement.type == "ObjectExpression")
             {
                 if(currentElement.parent == "VariableDeclarator" && currentElement.properties.length > 1)
                 {
-                    return "display: block"
+                    style += "display: block;"
                 }
                 else
                 {
-                    return "display: inline";
+                    style += "display: inline;";
                 }
             }
 
-            // if nothing
-            return "";
+            return style;
         },
 
         formatId: function(currentId)
@@ -1329,7 +1344,7 @@ FBL.ns(function () { with (FBL) {
 
         escapeHtml: function(string)
         {
-            return string.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\//, "\\/");
+            return string.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&#92;&quot;");
         }
     }
 }});

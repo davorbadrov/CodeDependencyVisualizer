@@ -9,13 +9,41 @@ var InputManager =
 
     initialize: function()
     {
-        var nodes = document.getElementsByClassName("node");
-
-        for (var i = 0; i < nodes.length; i++)
+        try
         {
-            nodes[i].addEventListener("click", this.stopEventPropagation);
-            nodes[i].addEventListener("click", this.selectElement);
+            var nodes = content.document.querySelectorAll(".node");
+
+            alert(nodes);
+            alert(nodes.length);
         }
+        catch (e) { alert("Error while initializing input manager: " + e); }
+//        var doc = undefined;
+//
+//        if (content != undefined)
+//        {
+//            doc = content.document;
+//        }
+//        else
+//        {
+//            doc = document;
+//        }
+
+        //var nodes = document.getElementsByClassName("node");
+        //alert(document);
+//        var nodes = context.window.document.querySelectorAll(".node");
+//
+//        alert(nodes);
+//        alert(nodes.length);
+
+        //var node = context.document.getElementById("astElement002145");
+//        alert(node);
+//        alert(nodes);
+//
+//        for (var i = 0; i < nodes.length; i++)
+//        {
+//            nodes[i].addEventListener("click", this.stopEventPropagation);
+//            nodes[i].addEventListener("click", this.selectElement);
+//        }
     },
 
     selectElement: function()

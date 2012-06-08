@@ -8,6 +8,7 @@
  * Returns: Array filled with nodes defined with the specified selectors
  *          or only one element( used for identifiers - #)
  */
+
 function $(selector, el) {
     if (!el) {el = document;}
 
@@ -49,19 +50,17 @@ function formatId(currentId)
 }
 
 /* onload event handler */
-function addLoadEvent(func) {
-    var oldonload = window.onload;
-    if (typeof window.onload != 'function') {
-        window.onload = func;
-    } else {
-        window.onload = function() {
-            if (oldonload) {
-                oldonload();
-            }
-            func();
-        }
-    }
-}
-//addLoadEvent(clickHandler);
-addLoadEvent(codeFormatHandler);
+//function addLoadEvent(func) {
+//    var oldonload = window.onload;
+//    if (typeof window.onload != 'function') {
+//        window.onload = func;
+//    } else {
+//        window.onload = function() {
+//            if (oldonload) {
+//                oldonload();
+//            }
+//            func();
+//        }
+//    }
+//}
 
