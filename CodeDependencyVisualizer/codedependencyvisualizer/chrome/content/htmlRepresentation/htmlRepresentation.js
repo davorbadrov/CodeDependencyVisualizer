@@ -12,7 +12,7 @@ var htmlRepresentation =
 
     initialize: function()
     {
-        this.site = this.generateHtmlRepresentation(testData2[1]);
+        this.site = this.generateHtmlRepresentation(testData2[0]);
     },
 
     generateHtmlRepresentation: function(root)
@@ -30,30 +30,30 @@ var htmlRepresentation =
                 + this.generateOpeningTags(root.htmlElement.type, root.htmlElement.attributes);
 
             // generate <head>
-            var htmlHeadNode = root.htmlElement.children[0];
+            var htmlHeadNode = root.htmlElement.childNodes[0];
 
             html += '<div class="head indented" id="' + FBL.Firecrow.CodeMarkupGenerator.formatId(htmlHeadNode.nodeId) + '">'
                 + this.generateOpeningTags(htmlHeadNode.type, htmlHeadNode.attributes);
 
-            // generate <head> children
-            for (var i = 0; i < htmlHeadNode.children.length; i++)
+            // generate <head> child nodes
+            for (var i = 0; i < htmlHeadNode.childNodes.length; i++)
             {
-                html += this.generateHtmlElement(htmlHeadNode.children[i]);
+                html += this.generateHtmlElement(htmlHeadNode.childNodes[i]);
             }
 
             // generate </head>
             html += this.generateClosingTags(htmlHeadNode.type) + '</div>';
 
             // generate <body>
-            var htmlBodyNode = root.htmlElement.children[2];
+            var htmlBodyNode = root.htmlElement.childNodes[2];
             html += '<div class="body indented" id="'
                   + FBL.Firecrow.CodeMarkupGenerator.formatId(htmlBodyNode.nodeId) + '">'
                   + this.generateOpeningTags(htmlBodyNode.type, htmlBodyNode.attributes);
 
-            // generate <body> children
-            for (var i = 0; i < htmlBodyNode.children.length; i++)
+            // generate <body> child nodes
+            for (var i = 0; i < htmlBodyNode.childNodes.length; i++)
             {
-                html += this.generateHtmlElement(htmlBodyNode.children[i]);
+                html += this.generateHtmlElement(htmlBodyNode.childNodes[i]);
             }
             // generate </body>
             html += this.generateClosingTags(htmlBodyNode.type) + '</div>';
@@ -160,6 +160,7 @@ var htmlRepresentation =
 
             if (element.type === "script")
             {
+                alert("hit");
                 var isExternScript = false;
                 var _path = "";
 
@@ -250,8 +251,8 @@ var htmlRepresentation =
                 if(element.textContent != undefined)
                     html += element.textContent;
 
-                for(var i=0; i < element.children.length; i++)
-                    html += '<span class="htmlContent">' + this.generateHtmlElement(element.children[i]) + '</span>';
+                for(var i=0; i < element.childNodes.length; i++)
+                    html += '<span class="htmlContent">' + this.generateHtmlElement(element.childNodes[i]) + '</span>';
 
             }
 

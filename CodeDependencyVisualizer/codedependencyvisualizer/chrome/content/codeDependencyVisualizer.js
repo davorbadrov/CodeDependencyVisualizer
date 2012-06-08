@@ -53,7 +53,7 @@ FBL.ns(function() { with (FBL) {
         {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
-            parentNode.innerHTML = htmlRepresentation.javascript[0].representation;
+            parentNode.innerHTML = htmlRepresentation.javascript[2].representation;
         },
 
         onTestButton2: function()
