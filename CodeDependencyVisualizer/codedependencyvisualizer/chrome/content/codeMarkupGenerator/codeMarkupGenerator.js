@@ -4,7 +4,8 @@
  */
 FBL.ns(function () { with (FBL) {
     /*******/
-        const astHelper = Firecrow.ASTHelper;
+
+    const astHelper = Firecrow.ASTHelper;
     const valueTypeHelper = Firecrow.ValueTypeHelper;
 
     Firecrow.CodeMarkupGenerator =
@@ -1292,6 +1293,9 @@ FBL.ns(function () { with (FBL) {
 //                    return "display: inline";
 //                }
             }
+
+            // if nothing
+            return "";
         },
 
         formatId: function(currentId)
@@ -1303,7 +1307,7 @@ FBL.ns(function () { with (FBL) {
 
         escapeHtml: function(string)
         {
-            return string.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\//, "&#47;");
+            return string.replace(/&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;").replace(/\//, "\\/");
         }
     }
 }});
