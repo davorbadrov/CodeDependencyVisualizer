@@ -127,8 +127,6 @@ FBL.ns(function () { with (FBL) {
             {
                 if(!astHelper.isFunction(functionDecExp)) { alert("Invalid Element when generating function html code!"); }
 
-                console.log(functionDecExp);
-
                 var _class = functionDecExp.type + " node";
                 var _id = "astElement" + this.formatId(functionDecExp.nodeId);
                 var _style = this.getStyle(functionDecExp);
@@ -579,6 +577,8 @@ FBL.ns(function () { with (FBL) {
                 var _hasMoreThanTwoProperties = false;
                 var _hasFunctionExpressions = false;
 
+                var generateInNextLine = false;
+
                 if (objectExpression.properties.length == 0)
                 {
 
@@ -621,7 +621,7 @@ FBL.ns(function () { with (FBL) {
                 }
                 else
                 {
-                    _containerStyle = "display: block;";
+                    generateInNextLine = true;
                     _propertyContainerStyle = "display: block; padding-left: 20px;";
                 }
 
@@ -629,7 +629,7 @@ FBL.ns(function () { with (FBL) {
                     "div",
                     {
                         class: _class,
-                        style: _containerStyle,
+                        style: "display: inline;",
                         id: _id
                     }
                 );
@@ -640,6 +640,11 @@ FBL.ns(function () { with (FBL) {
                 }
                 else
                 {
+                    if (generateInNextLine)
+                    {
+                        html += "<br>";
+                    }
+
                     html += '{';
 
                     for (var i = 0; i < objectExpression.properties.length; i++)
@@ -723,8 +728,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.WhileStatement + " node";
                 var _id = "astElement" + this.formatId(whileStatement.nodeId);
+                var _style = this.getStyle(whileStatement);
 
-                var html = this.getStartElementHtml("div", {class: _class, id: _id})
+                var html = this.getStartElementHtml("div", {class: _class, id: _id, style: _style})
                     + this.getElementHtml("span", {class:"keyword"}, "while")
                     + "(" + this.generateHtml(whileStatement.test) + ")  ";
 
@@ -890,8 +896,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.WithStatement + " node";
                 var _id = "astElement" + this.formatId(withStatement.nodeId);
+                var _style = this.getStyle(withStatement);
 
-                var html = this.getStartElementHtml("div", {class: _class, id: _id})
+                var html = this.getStartElementHtml("div", {class: _class, id: _id, style: _style})
                     + this.getElementHtml("span", {class:"keyword"}, "with") + " ("
                     + this.generateExpression(withStatement.object) + ")"
                     + this.generateStatement(withStatement.body)
@@ -910,6 +917,7 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.ThrowStatement + " node";
                 var _id =  "astElement" + this.formatId(throwStatement.nodeId);
+                var _style = this.getStyle(throwStatement);
 
                 var html = this.getStartElementHtml("div", {class: _class, id: _id})
                     + this.getElementHtml("span", {class: "keyword"}, "throw")
@@ -1019,8 +1027,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.LabeledStatement + " node";
                 var _id = "astElement" + this.formatId(labeledStatement.nodeId);
+                var _style = this.getStyle(labeledStatement);
 
-                var html = this.getStartElementHtml("div", {class: _class, id: _id})
+                var html = this.getStartElementHtml("div", {class: _class, id: _id, style: _style})
                     + this.generateFromIdentifier(labeledStatement.label) + ": "
                     + this.generateHtml(labeledStatement.body)
                     + this.getEndElementHtml("div");
@@ -1042,8 +1051,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.VariableDeclaration + " node";
                 var _id = "astElement" + this.formatId(variableDeclaration.nodeId);
+                var _style = this.getStyle(variableDeclaration);
 
-                html += this.getStartElementHtml("span", {class: _class, id: _id});
+                html += this.getStartElementHtml("span", {class: _class, id: _id, style: _style});
                 html += this.getElementHtml("span", {class:"keyword"}, variableDeclaration.kind);
                 html += " ";
 
@@ -1051,13 +1061,13 @@ FBL.ns(function () { with (FBL) {
                     var previousDeclarator = i == 0 ? variableDeclaration : variableDeclaration.declarations[i - 1];
                     var currentDeclarator = variableDeclaration.declarations[i];
 
-//                    if (previousDeclarator.loc.start.line != currentDeclarator.loc.start.line) {
-//                        //html += "<br/>";
-//                    }
-//
-//                    if (previousDeclarator != variableDeclaration) {
-//                        html += ", ";
-//                    }
+                    if (previousDeclarator.loc.start.line != currentDeclarator.loc.start.line) {
+                        //html += "<br/>";
+                    }
+
+                    if (previousDeclarator != variableDeclaration) {
+                        html += ", ";
+                    }
 
                     html += this.generateFromVariableDeclarator(currentDeclarator);
                 }
@@ -1286,7 +1296,9 @@ FBL.ns(function () { with (FBL) {
                 || currentElement.parent == "WhileStatement"
                 || currentElement.parent == "DoWhileStatement"
                 || currentElement.parent == "IfStatement"
-                || currentElement.parent == "SwitchCase")
+                || currentElement.parent == "SwitchCase"
+                || currentElement.parent == "BlockStatement"
+                || currentElement.parent == "TryStatement")
             {
                 return "padding-left: 20px";
             }
@@ -1294,16 +1306,14 @@ FBL.ns(function () { with (FBL) {
 
             if (currentElement.type == "ObjectExpression")
             {
-//                console.log(currentElement.parent);
-
-//                if(currentElement.parent == "VariableDeclarator" && currentElement.properties.length > 1)
-//                {
-//                    return "display: block"
-//                }
-//                else
-//                {
-//                    return "display: inline";
-//                }
+                if(currentElement.parent == "VariableDeclarator" && currentElement.properties.length > 1)
+                {
+                    return "display: block"
+                }
+                else
+                {
+                    return "display: inline";
+                }
             }
 
             // if nothing

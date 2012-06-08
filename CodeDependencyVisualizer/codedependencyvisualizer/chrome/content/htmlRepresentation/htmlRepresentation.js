@@ -160,7 +160,6 @@ var htmlRepresentation =
 
             if (element.type === "script")
             {
-                alert("hit");
                 var isExternScript = false;
                 var _path = "";
 
