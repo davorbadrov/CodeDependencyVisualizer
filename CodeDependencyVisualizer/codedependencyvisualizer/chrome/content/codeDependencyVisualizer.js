@@ -47,7 +47,7 @@ FBL.ns(function() { with (FBL) {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
             parentNode.innerHTML = htmlRepresentation.site;
-            InputManager.initialize();
+            InputManager.initialize(parentNode);
         },
 
         onTestButton1: function()
@@ -55,6 +55,7 @@ FBL.ns(function() { with (FBL) {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
             parentNode.innerHTML = htmlRepresentation.javascript[2].representation;
+            InputManager.initialize(parentNode);
         },
 
         onTestButton2: function()
@@ -62,7 +63,7 @@ FBL.ns(function() { with (FBL) {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
             parentNode.innerHTML = htmlRepresentation.cssStyle[0].representation;
-
+            InputManager.initialize(parentNode);
         },
 
         onClearButton: function()

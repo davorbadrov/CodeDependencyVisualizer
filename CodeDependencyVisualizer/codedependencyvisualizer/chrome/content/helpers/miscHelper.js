@@ -8,7 +8,6 @@
  * Returns: Array filled with nodes defined with the specified selectors
  *          or only one element( used for identifiers - #)
  */
-
 function $(selector, el) {
     if (!el) {el = document;}
 
@@ -16,6 +15,15 @@ function $(selector, el) {
     if (elements.length == 1) return elements[0];
     else return elements;
 }
+
+// testing node selection in firebug panels
+//function test(root)   root is the context.getPanel(panelName).panelNode
+//{
+//    var nodes = root.getElementsByClassName("node");
+//    alert(nodes.length);
+//    nodes = root.querySelectorAll(".node");
+//    alert(nodes.length);
+//}
 
 /* Add/Remove class Helpers */
 function hasClass(ele,cls)

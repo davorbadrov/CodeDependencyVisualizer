@@ -238,14 +238,10 @@ FBL.ns(function () { with (FBL) {
 
                 html += this.getElementHtml("div", {class: "Bracket"}, "{");
 
-                //this.currentIntendation += "&nbsp;&nbsp;";
-
                 blockStatement.body.forEach(function(statement)
                 {
                     html += this.generateHtml(statement);
                 }, this);
-
-                //this.currentIntendation = this.currentIntendation.replace(/&nbsp;&nbsp;$/g, "");
 
                 html += this.getElementHtml("div", {class: "Bracket"}, "}");
                 html += this.getEndElementHtml("div");
@@ -690,7 +686,7 @@ FBL.ns(function () { with (FBL) {
             }
         },
 
-        generateFromIfStatement: function(ifStatement)
+        generateFromIfStatement: function(ifStatement, isElseIfStatement)
         {
             try
             {
@@ -700,8 +696,15 @@ FBL.ns(function () { with (FBL) {
                 var _id = "astElement" + this.formatId(ifStatement.nodeId);
                 var _style = this.getStyle(ifStatement);
 
+                var _keyword = "if";
+                if (isElseIfStatement)
+                {
+                    _keyword = "else if";
+                    _style = "display: block;";
+                }
+
                 var html = this.getStartElementHtml("div", {class: _class, style: _style, id: _id})
-                    + this.getElementHtml("span", {class:"keyword"}, "if")
+                    + this.getElementHtml("span", {class:"keyword"}, _keyword)
                     + " (" + this.generateHtml(ifStatement.test) + ") ";
 
                 if(!astHelper.isBlockStatement(ifStatement.consequent))
@@ -711,8 +714,11 @@ FBL.ns(function () { with (FBL) {
 
                 if(ifStatement.alternate != null)
                 {
-                    html += this.getElementHtml("span", {class:"keyword", style: "padding-left: 20px;"}, "else ")
-                        + this.generateHtml(ifStatement.alternate);
+//                    html += this.getElementHtml("span", {class:"keyword", style: "padding-left: 20px;"}, "else ")
+//                        + this.generateHtml(ifStatement.alternate);
+                    if (ifStatement.alternate.type == "IfStatement")
+                        html += this.generateFromIfStatement(ifStatement.alternate, true);
+
                 }
 
                 html += this.getEndElementHtml("div");
@@ -922,7 +928,7 @@ FBL.ns(function () { with (FBL) {
                 var _id =  "astElement" + this.formatId(throwStatement.nodeId);
                 var _style = this.getStyle(throwStatement);
 
-                var html = this.getStartElementHtml("div", {class: _class, id: _id})
+                var html = this.getStartElementHtml("div", {class: _class, id: _id, style: _style})
                     + this.getElementHtml("span", {class: "keyword"}, "throw")
                     + " " + this.generateExpression(throwStatement.argument)
                     + ";" + this.getEndElementHtml("div");
@@ -998,8 +1004,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.STATEMENT.TryStatement  + " node";
                 var _id = "astElement" + this.formatId(tryStatement.nodeId);
+                var _style = this.getStyle(tryStatement);
 
-                var html = this.getStartElementHtml("div", {class: _class, id: _id})
+                var html = this.getStartElementHtml("div", {class: _class, id: _id, style: _style})
                     + this.getElementHtml("span", {class:"keyword"}, "try")
                     + this.generateHtml(tryStatement.block);
 
@@ -1295,21 +1302,22 @@ FBL.ns(function () { with (FBL) {
             && (currentElement.parent == "Function Expression"
                 || currentElement.parent == "FunctionDeclaration"))
             {
-                return "padding-left: 20px";
+                //return "padding-left: 20px";
             }
             if (currentElement.parent == "Property" && currentElement.type == "FunctionExpression")
             {
                 style = "display: inline;";
             }
 
-            if( currentElement.parent == "ForStatement"
+
+
+            if(( currentElement.parent == "ForStatement"
                 || currentElement.parent == "ForInStatement"
                 || currentElement.parent == "WhileStatement"
                 || currentElement.parent == "DoWhileStatement"
                 || currentElement.parent == "IfStatement"
                 || currentElement.parent == "SwitchCase"
-                || currentElement.parent == "BlockStatement"
-                || currentElement.parent == "TryStatement")
+                || currentElement.parent == "BlockStatement") && currentElement.type != "BlockStatement")
             {
                 style += "padding-left: 20px;";
 
@@ -1318,7 +1326,7 @@ FBL.ns(function () { with (FBL) {
             }
 
             if (currentElement.type == "IfStatement")
-                style += "display: inline;";
+                style += "display: block;";
 
             if (currentElement.type == "ObjectExpression")
             {
