@@ -29,47 +29,61 @@
 
     <!--        COMMANDS       -->
     <commandset id="mainCommandSet">
-        <command id="cmd_hwHtmlButton"
+        <command id="cmd_cdvHtmlButton"
                  oncommand="Firebug.CodeDependencyModule.onHtmlButton()" />
 
-        <command id="cmd_hwJavascriptButton"
+        <command id="cmd_cdvJavascriptButton"
                  oncommand="Firebug.CodeDependencyModule.onJavascriptButton()" />
 
-        <command id="cmd_hwCssButton"
+        <command id="cmd_cdvCssButton"
                  oncommand="Firebug.CodeDependencyModule.onCssButton()" />
 
-        <command id="cmd_hwClearButton"
+        <command id="cmd_cdvClearButton"
                  oncommand="Firebug.CodeDependencyModule.onClearButton()" />
     </commandset>
 
     <!--        BUTTONS         -->
     <toolbar id="fbToolbar" align="center">
-        <hbox id="fbToolbarInner" insertbefore="fbDetachButton" flex="1"
-              align="center">
-            <hbox id="fbFirebugExtensionButtons">
-                <toolbarbutton id="hwHtmlButton"
+        <hbox id="fbToolbarInner" insertbefore="fbDetachButton" flex="1" align="center">
+            <hbox id="fbFirebugExtensionButtons" collapsed="true">
+
+                <toolbarbutton id="cdvHtmlButton"
                                label="HTML" class="toolbar-text-button"
-                               tooltiptext="Click for HTML display." command="cmd_hwHtmlButton" />
-            </hbox>
+                               tooltiptext="Click for HTML display." command="cmd_cdvHtmlButton" />
 
-            <hbox id="fbFirebugExtensionButtons">
-                <toolbarbutton id="hwJavascriptButton"
+                <toolbarbutton id="cdvJavascriptButton"
                                label="Javascript" class="toolbar-text-button"
-                               tooltiptext="Click for Javacript display." command="cmd_hwJavascriptButton" />
-            </hbox>
+                               tooltiptext="Click for Javacript display." command="cmd_cdvJavascriptButton" />
 
-            <hbox id="fbFirebugExtensionButtons">
-                <toolbarbutton id="hwCssButton"
+                <toolbarbutton id="cdvCssButton"
                                label="CSS" class="toolbar-text-button"
-                               tooltiptext="Click for CSS display." command="cmd_hwCssButton" />
+                               tooltiptext="Click for CSS display." command="cmd_cdvCssButton" />
+
+                 <toolbarbutton id="cdvClearButton"
+                          label="Clear" class="toolbar-text-button"
+                          tooltiptext="Click to clear the panel" command="cmd_cdvClearButton" />
+
+                <toolbarbutton id="cdvJavascriptMenu" label="Javascript" type="menu">
+                    <menupopup id="cdvjavascriptMenuPopup">
+                        <menuitem label="option 1" value="1"/>
+                        <menuitem label="option 2" value="2"/>
+                        <menuitem label="option 3" value="3"/>
+                        <menuitem label="option 4" value="4"/>
+                    </menupopup>
+                </toolbarbutton>
+
+                <toolbarbutton id="cdvCSSMenu" label="CSS" type="menu">
+                    <menupopup id="cdvcssMenuPopup">
+                        <menuitem label="option 1" value="1"/>
+                        <menuitem label="option 2" value="2"/>
+                        <menuitem label="option 3" value="3"/>
+                        <menuitem label="option 4" value="4"/>
+                    </menupopup>
+                </toolbarbutton>
             </hbox>
 
-            <hbox id="fbFirebugExtensionButtons">
-                <toolbarbutton id="hwClearButton"
-                               label="Clear" class="toolbar-text-button"
-                               tooltiptext="Click to clear the panel" command="cmd_hwClearButton" />
-            </hbox>
         </hbox>
+
     </toolbar>
 
 
