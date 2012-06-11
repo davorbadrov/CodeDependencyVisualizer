@@ -50,7 +50,7 @@ FBL.ns(function() { with (FBL) {
             InputManager.initialize(parentNode);
         },
 
-        onTestButton1: function()
+        onJavascriptButton: function()
         {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
@@ -58,7 +58,7 @@ FBL.ns(function() { with (FBL) {
             InputManager.initialize(parentNode);
         },
 
-        onTestButton2: function()
+        onCssButton: function()
         {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;

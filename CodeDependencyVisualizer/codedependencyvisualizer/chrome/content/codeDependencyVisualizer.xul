@@ -32,11 +32,11 @@
         <command id="cmd_hwHtmlButton"
                  oncommand="Firebug.CodeDependencyModule.onHtmlButton()" />
 
-        <command id="cmd_hwTestButton1"
-                 oncommand="Firebug.CodeDependencyModule.onTestButton1()" />
+        <command id="cmd_hwJavascriptButton"
+                 oncommand="Firebug.CodeDependencyModule.onJavascriptButton()" />
 
-        <command id="cmd_hwTestButton2"
-                 oncommand="Firebug.CodeDependencyModule.onTestButton2()" />
+        <command id="cmd_hwCssButton"
+                 oncommand="Firebug.CodeDependencyModule.onCssButton()" />
 
         <command id="cmd_hwClearButton"
                  oncommand="Firebug.CodeDependencyModule.onClearButton()" />
@@ -53,15 +53,15 @@
             </hbox>
 
             <hbox id="fbFirebugExtensionButtons">
-                <toolbarbutton id="hwTestButton1"
-                               label="Test1" class="toolbar-text-button"
-                               tooltiptext="Testing purposes." command="cmd_hwTestButton1" />
+                <toolbarbutton id="hwJavascriptButton"
+                               label="Javascript" class="toolbar-text-button"
+                               tooltiptext="Click for Javacript display." command="cmd_hwJavascriptButton" />
             </hbox>
 
             <hbox id="fbFirebugExtensionButtons">
-                <toolbarbutton id="hwTestButton2"
-                               label="Test2" class="toolbar-text-button"
-                               tooltiptext="Testing purposes." command="cmd_hwTestButton2" />
+                <toolbarbutton id="hwCssButton"
+                               label="CSS" class="toolbar-text-button"
+                               tooltiptext="Click for CSS display." command="cmd_hwCssButton" />
             </hbox>
 
             <hbox id="fbFirebugExtensionButtons">

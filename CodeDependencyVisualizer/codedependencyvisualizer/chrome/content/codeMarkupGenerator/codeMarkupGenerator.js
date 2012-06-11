@@ -243,7 +243,7 @@ FBL.ns(function () { with (FBL) {
                     html += this.generateHtml(statement);
                 }, this);
 
-                html += this.getElementHtml("div", {class: "Bracket"}, "}");
+                html += this.getElementHtml("div", {class: "Bracket", style: "display: inline;"}, "}");
                 html += this.getEndElementHtml("div");
 
                 return html;
@@ -1168,9 +1168,9 @@ FBL.ns(function () { with (FBL) {
 
                 var _class = astHelper.CONST.Identifier + " node";
                 var _id = "astElement" + this.formatId(identifier.nodeId);
-                var _padding = this.getStyle(identifier);
-
-                return this.getElementHtml("span", {class: _class, id: _id, style: _padding}, identifier.name);
+                //var _padding = this.getStyle(identifier);
+                                                                            // generated unneeded padding
+                return this.getElementHtml("span", {class: _class, id: _id/*, style: _padding*/}, identifier.name);
             }
             catch(e) { alert("Error when generating HTML from an identifier:" + e);}
         },
@@ -1298,18 +1298,24 @@ FBL.ns(function () { with (FBL) {
 
             var style = "";
 
+            if (currentElement.type == "VariableDeclaration" && currentElement.parent == "ForStatement")
+                return "";
+
             if (currentElement.type == "BlockStatement"
-            && (currentElement.parent == "Function Expression"
+            && (currentElement.parent == "FunctionExpression"
                 || currentElement.parent == "FunctionDeclaration"))
             {
-                //return "padding-left: 20px";
+                style += "display: inline;";
             }
             if (currentElement.parent == "Property" && currentElement.type == "FunctionExpression")
             {
-                style = "display: inline;";
+                style += "display: inline;";
             }
 
-
+            if (currentElement.type == "BlockStatement" && currentElement.parent == "Property")
+            {
+                style += "dispaly: inline;";
+            }
 
             if(( currentElement.parent == "ForStatement"
                 || currentElement.parent == "ForInStatement"
