@@ -16,15 +16,6 @@ function $(selector, el) {
     else return elements;
 }
 
-// testing node selection in firebug panels
-//function test(root)   root is the context.getPanel(panelName).panelNode
-//{
-//    var nodes = root.getElementsByClassName("node");
-//    alert(nodes.length);
-//    nodes = root.querySelectorAll(".node");
-//    alert(nodes.length);
-//}
-
 /* Add/Remove class Helpers */
 function hasClass(ele,cls)
 {
@@ -50,25 +41,11 @@ function getRandomInteger(min, max)
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+
 function formatId(currentId)
 {
     if(currentId < 0) alert("Invalid Node Identification: ID cannot be negative.)");
     if(currentId > 999999) alert("Invalid Node Identification: ID exceeds, but is limited to,  6 characters");
     return ("00000" + currentId).slice(-6);
 }
-
-/* onload event handler */
-//function addLoadEvent(func) {
-//    var oldonload = window.onload;
-//    if (typeof window.onload != 'function') {
-//        window.onload = func;
-//    } else {
-//        window.onload = function() {
-//            if (oldonload) {
-//                oldonload();
-//            }
-//            func();
-//        }
-//    }
-//}
 

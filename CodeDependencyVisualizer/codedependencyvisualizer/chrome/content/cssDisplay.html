@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Testing Dependency Visualizer</title>
+    <link href="../skin/classic/style.css" rel="Stylesheet" type="text/css">
+    <script src="initFb.js"></script>
+
+    <script src="helpers/valueTypeHelper.js"></script>
+    <script src="helpers/ASTHelper.js"></script>
+
+    <script src="helpers/miscHelper.js"></script>
+
+    <script src="htmlRepresentation/dependencies.js"></script>
+    <script src="htmlRepresentation/inputManager.js"></script>
+
+    <script src="codeMarkupGenerator/testData.js"></script>
+    <script src="codeMarkupGenerator/codeMarkupGenerator.js"></script>
+
+    <script src="htmlRepresentation/htmlRepresentation.js"></script>
+</head>
+<body>
+    <div id="codeHtmlContainer"></div>
+    <script>
+
+        htmlRepresentation.initialize();
+        document.getElementById("codeHtmlContainer").innerHTML = htmlRepresentation.cssStyle[0].representation;
+        Dependencies.initialize();
+        InputManager.initialize(document);
+
+    </script>
+</body>
+</html>

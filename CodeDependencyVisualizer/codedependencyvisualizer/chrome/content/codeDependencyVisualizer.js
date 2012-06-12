@@ -7,6 +7,8 @@ FBL.ns(function() { with (FBL) {
 
     var panelName = "CodeDependencyVisualizer";
     var panelTitle = "Code Dependencies";
+    //var root = FBL.Firebug.context.getPanel(panelName).panelNode;
+    //FBL.Firebug.CodeDependencyModule.panel
 
 //	var InitializePlate = domplate(
 //	{
@@ -27,51 +29,67 @@ FBL.ns(function() { with (FBL) {
         showPanel: function(browser, panel)
         {
             var isHwPanel = panel && panel.name == panelName;
-            var hwButtons = browser.chrome.$("fbFirebugExtensionButtons");
+            var hwButtons = browser.chrome.$("fbCodeDependencyVisualizerButtons");
             collapse(hwButtons, !isHwPanel);
 
-//            // Write a message when panel gets active
             context = Firebug.currentContext;
 
-            var panel = context.getPanel(panelName);
-            var parentNode = panel.panelNode;
+            //var panel = context.getPanel(panelName);
+            //var parentNode = panel.panelNode;
 //            var root = InitializePlate.InitializeTag.replace(
 //                {}, parentNode, InitializePlate);
 
             // initialize html on start
             htmlRepresentation.initialize();
+
+            XulHelper.createMenus();
+        },
+
+        initContext: function()
+        {
+            //alert("hit");
+            // initialize javascript and css buttons
         },
 
         onHtmlButton: function()
         {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
-            parentNode.innerHTML = htmlRepresentation.site;
+
+            //parentNode.innerHTML = htmlRepresentation.site;
+
+            this.changePanelContent(htmlRepresentation.site);
             InputManager.initialize(parentNode);
         },
 
-        onJavascriptButton: function()
+        changePanelContent: function(newContent)
         {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
-            parentNode.innerHTML = htmlRepresentation.javascript[2].representation;
-            InputManager.initialize(parentNode);
-        },
-
-        onCssButton: function()
-        {
-            var panel = context.getPanel(panelName);
-            var parentNode = panel.panelNode;
-            parentNode.innerHTML = htmlRepresentation.cssStyle[0].representation;
-            InputManager.initialize(parentNode);
-        },
-
-        onClearButton: function()
-        {
-            var panel = context.getPanel(panelName);
-            var parentNode = panel.panelNode;
-            parentNode.innerHTML = "";
+            parentNode.innerHTML = newContent;
         }
+//        onJavascriptButton: function()
+//        {
+//            var panel = context.getPanel(panelName);
+//            var parentNode = panel.panelNode;
+//            parentNode.innerHTML = htmlRepresentation.javascript[2].representation;
+//            InputManager.initialize(parentNode);
+//        },
+//
+//        onCssButton: function()
+//        {
+//            var panel = context.getPanel(panelName);
+//            var parentNode = panel.panelNode;
+//            parentNode.innerHTML = htmlRepresentation.cssStyle[0].representation;
+//            InputManager.initialize(parentNode);
+//        },
+//
+//        onClearButton: function()
+//        {
+//            var panel = context.getPanel(panelName);
+//            var parentNode = panel.panelNode;
+//            parentNode.innerHTML = "";
+//        }
     });
 
 

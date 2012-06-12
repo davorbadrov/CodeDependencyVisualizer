@@ -6,13 +6,18 @@
 
 var htmlRepresentation =
 {
+    initialized: false,
     site: "",
     javascript: [],
     cssStyle: [],
 
     initialize: function()
     {
-        this.site = this.generateHtmlRepresentation(testData2[0]);
+        if (!this.initialized)
+        {
+            this.site = this.generateHtmlRepresentation(testData2[0]);
+            this.initialized = true;
+        }
     },
 
     generateHtmlRepresentation: function(root)
@@ -164,6 +169,7 @@ var htmlRepresentation =
                 var _path = "";
                 var _filename = "";
 
+                // check if extern script
                 for (var i = 0; i < element.attributes.length; i++)
                 {
                     if (element.attributes[i].name === "src")
@@ -297,7 +303,7 @@ var htmlRepresentation =
                     while(cssRules[0] === " ")
                         cssRules = cssRules.replace(" ", "");
 
-                    html += '<div class="cssRule" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(cssModel.rules[i].nodeId) +'">';
+                    html += '<div class="cssRulesContainer" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(cssModel.rules[i].nodeId) +'">';
                     //html += '<span class="cssSelector">' + cssModel.rules[i].selector + "</span><br>";
                     html += '<span class="cssSelector">' + cssModel.rules[i].selector + '</span><br>';
                     html += "{ <br>";
