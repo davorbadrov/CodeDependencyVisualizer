@@ -292,7 +292,7 @@ var htmlRepresentation =
                 // if rule is @charset
                 if (cssModel.rules[i].cssText[0] == "@")
                 {
-                    html += '<div class="cssCharset" id="astElement' + cssModel.rules[i].nodeId + '">' + cssModel.rules[i].cssText + '</div>';
+                    html += '<div class="cssCharset node" id="astElement' + cssModel.rules[i].nodeId + '">' + cssModel.rules[i].cssText + '</div>';
                 }
                 else
                 {
@@ -303,9 +303,9 @@ var htmlRepresentation =
                     while(cssRules[0] === " ")
                         cssRules = cssRules.replace(" ", "");
 
-                    html += '<div class="cssRulesContainer" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(cssModel.rules[i].nodeId) +'">';
+                    html += '<div class="cssRulesContainer node" id="astElement' + FBL.Firecrow.CodeMarkupGenerator.formatId(cssModel.rules[i].nodeId) +'">';
                     //html += '<span class="cssSelector">' + cssModel.rules[i].selector + "</span><br>";
-                    html += '<span class="cssSelector">' + cssModel.rules[i].selector + '</span><br>';
+                    html += '<span class="cssSelector node">' + cssModel.rules[i].selector + '</span><br>';
                     html += "{ <br>";
 
                     rulesArray = cssRules.split("; ");
@@ -313,7 +313,7 @@ var htmlRepresentation =
                     for(var j = 0; j < rulesArray.length; j++)
                     {
                         if(rulesArray[j] != "")
-                            html += "<span class=\"cssRule\">" + rulesArray[j] + ";</span><br>";
+                            html += '<span class="cssRule node">' + rulesArray[j] + ';</span><br>';
                     }
                     html += '} </div>';
                 }
