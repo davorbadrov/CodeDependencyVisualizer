@@ -16,6 +16,7 @@ FBL.ns(function() { with (FBL) {
 //			DIV({class: "default"},
 //					"The " + panelTitle + " panel has just been opened."
 //			)
+
 //	});
 
     /************************************************************

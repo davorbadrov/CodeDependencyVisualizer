@@ -11,12 +11,22 @@ var htmlRepresentation =
     javascript: [],
     cssStyle: [],
 
-    initialize: function()
+    initialize: function(hasBeenInitializedCallback, thisValue)
     {
         if (!this.initialized)
         {
-            this.site = this.generateHtmlRepresentation(testData2[0]);
-            this.initialized = true;
+            Firebug.FirecrowModule.asyncGetPageModel(function(pageModel)
+            {
+                this.site = this.generateHtmlRepresentation(pageModel);
+                this.initialized = true;
+            }, this);
+        }
+        else
+        {
+            if(hasBeenInitializedCallback != null)
+            {
+                hasBeenInitializedCallback.call(thisValue);
+            }
         }
     },
 
