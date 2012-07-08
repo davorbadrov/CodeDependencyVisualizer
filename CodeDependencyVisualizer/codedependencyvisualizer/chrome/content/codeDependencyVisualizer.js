@@ -29,21 +29,27 @@ FBL.ns(function() { with (FBL) {
     {
         showPanel: function(browser, panel)
         {
-            var isHwPanel = panel && panel.name == panelName;
-            var hwButtons = browser.chrome.$("fbCodeDependencyVisualizerButtons");
-            collapse(hwButtons, !isHwPanel);
+            try
+            {
+                var isHwPanel = panel && panel.name == panelName;
+                var hwButtons = browser.chrome.$("fbCodeDependencyVisualizerButtons");
+                collapse(hwButtons, !isHwPanel);
 
-            context = Firebug.currentContext;
+                context = Firebug.currentContext;
 
-            //var panel = context.getPanel(panelName);
-            //var parentNode = panel.panelNode;
+                //var panel = context.getPanel(panelName);
+                //var parentNode = panel.panelNode;
 //            var root = InitializePlate.InitializeTag.replace(
 //                {}, parentNode, InitializePlate);
 
-            // initialize html on start
-            htmlRepresentation.initialize();
-
-            XulHelper.createMenus();
+                // initialize html on start
+                htmlRepresentation.initialize(function()
+                {
+                    XulHelper.createMenus();
+                    htmlRepresentation.determineDependencies();
+                }, this);
+            }
+            catch(e) { alert("Error when showing panel: " + e); }
         },
 
         initContext: function()

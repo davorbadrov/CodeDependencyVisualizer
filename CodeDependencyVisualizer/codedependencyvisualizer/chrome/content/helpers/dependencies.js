@@ -1,8 +1,6 @@
-var astHelper = FBL.Firecrow.ASTHelper;
-
 function bindDependencies(root)
 {
-    astHelper.traverseAst(root, function(currentElement, attributeName, parentElement)
+    FBL.Firecrow.ASTHelper.traverseAst(root, function(currentElement, attributeName, parentElement)
     {
         var node = document.getElementById("astElement" + formatId(currentElement.nodeId));
         if (node != null && hasClass(node, "node"))

@@ -8,9 +8,6 @@
           <script src="chrome://codedependencyvisualizer/content/initFb.js" type="application/x-javascript"/>
     -->
 
-    <script src="chrome://codedependencyvisualizer/content/helpers/valueTypeHelper.js" type="application/x-javascript"/>
-    <script src="chrome://codedependencyvisualizer/content/helpers/ASTHelper.js" type="application/x-javascript"/>
-
     <script src="chrome://codedependencyvisualizer/content/helpers/clickHandler.js" type="application/x-javascript"/>
     <script src="chrome://codedependencyvisualizer/content/helpers/dependencies.js" type="application/x-javascript"/>
     <script src="chrome://codedependencyvisualizer/content/helpers/codeFormatHandler.js" type="application/x-javascript"/>

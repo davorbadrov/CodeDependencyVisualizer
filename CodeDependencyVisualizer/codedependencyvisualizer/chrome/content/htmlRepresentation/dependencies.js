@@ -4,14 +4,11 @@
  * Time: 11:01 AM
  * To change this template use File | Settings | File Templates.
  */
-
-var astHelper = FBL.Firecrow.ASTHelper;
-
 var Dependencies =
 {
     initialize: function(rootElement)
     {
-        astHelper.traverseAst(rootElement, function(currentElement, attributeName, parentElement)
+        FBL.Firecrow.ASTHelper.traverseAst(rootElement, function(currentElement, attributeName, parentElement)
         {
             var node = document.getElementById("astElement" + formatId(currentElement.nodeId));
             if (node != null && hasClass(node, "node"))
