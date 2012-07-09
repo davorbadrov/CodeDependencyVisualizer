@@ -31,9 +31,14 @@ FBL.ns(function() { with (FBL) {
         {
             try
             {
-                var isHwPanel = panel && panel.name == panelName;
-                var hwButtons = browser.chrome.$("fbCodeDependencyVisualizerButtons");
-                collapse(hwButtons, !isHwPanel);
+                var isCdvPanel = panel && panel.name == panelName;
+
+                // Chrome changes in Firebug version 1.4
+                var chrome = browser.chrome ? browser.chrome : Firebug.chrome;
+
+                var hwButtons = chrome.$("fbCodeDependencyVisualizerButtons");
+
+                collapse(hwButtons, !isCdvPanel);
 
                 context = Firebug.currentContext;
 
@@ -43,11 +48,11 @@ FBL.ns(function() { with (FBL) {
 //                {}, parentNode, InitializePlate);
 
                 // initialize html on start
-                htmlRepresentation.initialize(function()
-                {
-                    XulHelper.createMenus();
-                    htmlRepresentation.determineDependencies();
-                }, this);
+//                htmlRepresentation.initialize(function()
+//                {
+//                    htmlRepresentation.determineDependencies();
+//                    XulHelper.createMenus();
+//                }, this);
             }
             catch(e) { alert("Error when showing panel: " + e); }
         },
@@ -62,10 +67,17 @@ FBL.ns(function() { with (FBL) {
         {
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
-
             //parentNode.innerHTML = htmlRepresentation.site;
 
+            htmlRepresentation.initialize(function()
+            {
+                htmlRepresentation.determineDependencies();
+                XulHelper.createMenus();
+            }, this);
+
             this.changePanelContent(htmlRepresentation.site);
+            //XulHelper.createMenus();
+
             InputManager.initialize(parentNode);
         },
 
