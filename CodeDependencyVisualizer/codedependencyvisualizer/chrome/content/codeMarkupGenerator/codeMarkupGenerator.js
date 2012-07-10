@@ -89,7 +89,9 @@ FBL.ns(function () { with (FBL) {
 
                 return html;
             }
-            catch(e) { alert("Error when generating HTML from a statement: " + e); }
+            catch(e) {
+                alert("Error when generating HTML from a statement: " + e);
+            }
         },
 
         generateExpression: function(expression)

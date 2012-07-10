@@ -36,14 +36,27 @@ FBL.ns(function() { with (FBL) {
                 // Chrome changes in Firebug version 1.4
                 var chrome = browser.chrome ? browser.chrome : Firebug.chrome;
 
-                var hwButtons = chrome.$("fbCodeDependencyVisualizerButtons");
+                var cdvButtons = chrome.$("fbCodeDependencyVisualizerButtons");
 
-                collapse(hwButtons, !isCdvPanel);
+                collapse(cdvButtons, !isCdvPanel);
 
-                context = Firebug.currentContext;
+                var cdvDynamicButtons = chrome.$("fbCodeDependencyVisualizerDynamicButtons");
 
-                //var panel = context.getPanel(panelName);
-                //var parentNode = panel.panelNode;
+                collapse(cdvDynamicButtons, !isCdvPanel);
+
+                if (panel && (panel.name == panelName))
+                {
+                    var parentNode = panel.panelNode;
+                    parentNode.innerHTML = "<div>Code dependency visualizer</div><div>Click \"Get page code\" to start</p>";
+                }
+//                //context = Firebug.currentContext;
+//
+//                //var panel = context.getPanel(panelName);
+//
+//
+//                var parentNode = panel.panelNode;
+//                parentNode.innerHTML = "<p>Click start to show page code!</p>";
+
 //            var root = InitializePlate.InitializeTag.replace(
 //                {}, parentNode, InitializePlate);
 
@@ -59,23 +72,42 @@ FBL.ns(function() { with (FBL) {
 
         initContext: function()
         {
-            //alert("hit");
             // initialize javascript and css buttons
+            //var context = Firebug.currentContext;
+        },
+//
+        initialize: function()
+        {
         },
 
-        onHtmlButton: function()
+        onGetPageCodeButton: function()
         {
-            var panel = context.getPanel(panelName);
-            var parentNode = panel.panelNode;
-            //parentNode.innerHTML = htmlRepresentation.site;
+            htmlRepresentation.destroyContent();
 
             htmlRepresentation.initialize(function()
             {
                 htmlRepresentation.determineDependencies();
-                XulHelper.createMenus();
             }, this);
 
+            // asynchronous function calls ? HTML doesn't get generated before calling this function or something
+            //this.changePanelContent(htmlRepresentation.site);
+        },
+
+        onHtmlButton: function()
+        {
             this.changePanelContent(htmlRepresentation.site);
+
+            //var parentNode = panel.panelNode;
+            //parentNode.innerHTML = htmlRepresentation.site;
+
+//            htmlRepresentation.initialize(function()
+//            {
+//                htmlRepresentation.determineDependencies();
+//                XulHelper.createMenus();
+//            }, this);
+
+
+            //this.changePanelContent(htmlRepresentation.site);
             //XulHelper.createMenus();
 
             InputManager.initialize(parentNode);
@@ -83,8 +115,10 @@ FBL.ns(function() { with (FBL) {
 
         changePanelContent: function(newContent)
         {
+            var context = Firebug.currentContext;
             var panel = context.getPanel(panelName);
             var parentNode = panel.panelNode;
+
             parentNode.innerHTML = newContent;
             InputManager.initialize(parentNode);
         }

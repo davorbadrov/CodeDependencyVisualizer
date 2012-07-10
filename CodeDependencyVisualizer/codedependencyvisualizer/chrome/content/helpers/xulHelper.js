@@ -14,66 +14,72 @@
 //	</toolbarbutton>
 var XulHelper =
 {
-    menusCreated: false,
-    createMenus: function()
+    isMenuCreated: false,
+    buttonContainerId: "fbCodeDependencyVisualizerDynamicButtons",
+    createUI: function()
     {
-
-        // menusCreated: used to avoid multiple javascript & css menu creation
-        // reason: initialize is called every time firebug panel is changed
-        if (!this.menusCreated)
+        if (this.isMenuCreated)
         {
-            var toolbar, menupopup = null;
-            var name, oncommand, menuitem = null;
-            var buttonContainer = null;
-
-            // for Javascript
-            if (htmlRepresentation.javascript.length > 0)
-            {
-                toolbar = this.createToolbarButton("cdvJavascriptMenu", "Javascript", "menu");
-                menupopup = this.createMenuPopup("cdvJavascriptMenuPopup");
-
-                toolbar.appendChild(menupopup);
-
-                for (var i = 0; i < htmlRepresentation.javascript.length; i++)
-                {
-                    name = htmlRepresentation.javascript[i].name;
-
-                    // awful code -.-
-                    // function has to be given as a string, hard-coded values need to be passed
-                    oncommand = "Firebug.CodeDependencyModule.changePanelContent(htmlRepresentation.javascript[" + i + " ].representation);";
-
-                    menuitem = this.createMenuItem(name, oncommand, i);
-                    menupopup.appendChild(menuitem);
-                }
-
-                buttonContainer = document.getElementById("fbCodeDependencyVisualizerButtons");
-                buttonContainer.appendChild(toolbar);
-            }
-
-
-            // for CSS
-            if (htmlRepresentation.cssStyle.length > 0)
-            {
-                toolbar = this.createToolbarButton("cdvCssMenu", "CSS", "menu");
-                menupopup = this.createMenuPopup("cdvCssMenuPopup");
-
-                toolbar.appendChild(menupopup);
-
-                for (var i = 0; i < htmlRepresentation.cssStyle.length; i++)
-                {
-                  name = htmlRepresentation.cssStyle[i].name;
-                  oncommand = "Firebug.CodeDependencyModule.changePanelContent(htmlRepresentation.cssStyle[" + i + " ].representation);";
-
-                  menuitem = this.createMenuItem(name, oncommand, i);
-                  menupopup.appendChild(menuitem);
-                }
-
-                buttonContainer = document.getElementById("fbCodeDependencyVisualizerButtons");
-                buttonContainer.appendChild(toolbar);
-            }
-
-            this.menusCreated = true;
+            this.destroyUI();
         }
+
+        var toolbar, menupopup = null;
+        var name, oncommand, menuitem = null;
+        var buttonContainer = document.getElementById(this.buttonContainerId);
+
+        // create a toolbar separator
+        buttonContainer.appendChild(this.createSeparator());
+
+        // create a HTML button
+        var htmlButton = this.createHtmlButton();
+
+        buttonContainer.appendChild(htmlButton);
+
+        // for Javascript
+        if (htmlRepresentation.javascript.length > 0)
+        {
+            toolbar = this.createToolbarButton("cdvJavascriptMenu", "Javascript", "menu");
+            menupopup = this.createMenuPopup("cdvJavascriptMenuPopup");
+
+            toolbar.appendChild(menupopup);
+
+            for (var i = 0; i < htmlRepresentation.javascript.length; i++)
+            {
+                name = htmlRepresentation.javascript[i].name;
+
+                // awful code -.-
+                // function has to be given as a string, hard-coded values need to be passed
+                oncommand = "Firebug.CodeDependencyModule.changePanelContent(htmlRepresentation.javascript[" + i + " ].representation);";
+
+                menuitem = this.createMenuItem(name, oncommand, i);
+                menupopup.appendChild(menuitem);
+            }
+
+            buttonContainer.appendChild(toolbar);
+        }
+
+
+        // for CSS
+        if (htmlRepresentation.cssStyle.length > 0)
+        {
+            toolbar = this.createToolbarButton("cdvCssMenu", "CSS", "menu");
+            menupopup = this.createMenuPopup("cdvCssMenuPopup");
+
+            toolbar.appendChild(menupopup);
+
+            for (var i = 0; i < htmlRepresentation.cssStyle.length; i++)
+            {
+              name = htmlRepresentation.cssStyle[i].name;
+              oncommand = "Firebug.CodeDependencyModule.changePanelContent(htmlRepresentation.cssStyle[" + i + " ].representation);";
+
+              menuitem = this.createMenuItem(name, oncommand, i);
+              menupopup.appendChild(menuitem);
+            }
+
+            buttonContainer.appendChild(toolbar);
+        }
+
+        this.isMenuCreated = true;
     },
 
     createToolbarButton: function(toolbarId, toolbarLabel, toolbarType)
@@ -115,5 +121,39 @@ var XulHelper =
         menuitem.setAttribute("type", "radio");
 
         return menuitem;
+    },
+
+    createHtmlButton: function()
+    {
+        const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+        var htmlButton = document.createElementNS(XUL_NS, "toolbarbutton");
+        htmlButton.setAttribute("id", "cdvHtmlButton");
+        htmlButton.setAttribute("label", "HTML");
+        htmlButton.setAttribute("tooltiptext", "Click to display HTML.");
+        htmlButton.setAttribute("command", "cmd_cdvHtmlButton");
+
+        return htmlButton;
+    },
+
+    createSeparator: function()
+    {
+        const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+        var separator = document.createElementNS(XUL_NS, "toolbarseparator");
+
+        return separator;
+    },
+
+    destroyUI: function()
+    {
+        var buttonContainer = document.getElementById(this.buttonContainerId);
+
+        while (buttonContainer.hasChildNodes())
+        {
+            buttonContainer.removeChild(buttonContainer.firstChild);
+        }
+
+        this.isMenuCreated = false;
     }
 };

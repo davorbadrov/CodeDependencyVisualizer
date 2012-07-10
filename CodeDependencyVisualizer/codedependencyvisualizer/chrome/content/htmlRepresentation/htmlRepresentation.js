@@ -23,6 +23,7 @@ var htmlRepresentation =
                 this.site = this.generateHtmlRepresentation(pageModel);
                 this.initialized = true;
                 this.determineDependencies();
+                XulHelper.createUI();
             }, this);
         }
         else
@@ -379,5 +380,15 @@ var htmlRepresentation =
             //|| elementType === "link"
             //|| elementType === "script"
             || elementType === "param");
+    },
+
+    destroyContent: function()
+    {
+        this.initialized = false;
+        this.site = "";
+        this.haveDependenciesBeenDetermined = false;
+        this.pageModel = null;
+        this.javascript.length = 0;
+        this.cssStyle.length = 0;
     }
 };
