@@ -390,5 +390,26 @@ var htmlRepresentation =
         this.pageModel = null;
         this.javascript.length = 0;
         this.cssStyle.length = 0;
+    },
+
+    createLinksBetweenHtmlAndModel: function(code, model)
+    {
+        //TODO: check for missing model elements
+        FBL.Firecrow.ASTHelper.traverseAst(model, function(modelElement, propName)
+        {
+            if (propName === "pathAndModel" || modelElement.type === "Program")  { return; }
+
+            var nodeId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(modelElement.nodeId);
+            var htmlNode = code.querySelector("#"+nodeId);
+
+            if (htmlNode == null && modelElement.type == "TextNode") { return; }
+            if (htmlNode == null) {
+            return; // the tree containes node models for the whole page,
+                   // it's normal if it doesn't find each one in the current document
+            }
+
+            modelElement.htmlNode = htmlNode;
+            htmlNode.model = modelElement;
+        });
     }
 };

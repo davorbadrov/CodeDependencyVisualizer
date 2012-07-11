@@ -27,6 +27,7 @@ FBL.ns(function() { with (FBL) {
 
     Firebug.CodeDependencyModule = extend(Firebug.Module,
     {
+        test: 1,
         showPanel: function(browser, panel)
         {
             try
@@ -75,7 +76,11 @@ FBL.ns(function() { with (FBL) {
             // initialize javascript and css buttons
             //var context = Firebug.currentContext;
         },
-//
+
+        reattachContext: function()
+        {
+        },
+
         initialize: function()
         {
         },
@@ -120,7 +125,31 @@ FBL.ns(function() { with (FBL) {
             var parentNode = panel.panelNode;
 
             parentNode.innerHTML = newContent;
-            InputManager.initialize(parentNode);
+
+            this.onPanelContentChange();
+            //InputManager.initialize(parentNode);
+        },
+
+        onPanelContentChange: function()
+        {
+            var codeContainer = this.getPanelContent();
+            var model = htmlRepresentation.pageModel;
+
+            htmlRepresentation.createLinksBetweenHtmlAndModel(codeContainer, model);
+        },
+
+        getPanelContent: function()
+        {
+            var context = Firebug.currentContext;
+            var panel = context.getPanel(panelName);
+            var parentNode = panel.panelNode;
+
+            return parentNode;
+        },
+
+        establishDependencies: function()
+        {
+
         }
 //        onJavascriptButton: function()
 //        {
