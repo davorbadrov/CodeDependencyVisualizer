@@ -136,6 +136,8 @@ FBL.ns(function() { with (FBL) {
             var model = htmlRepresentation.pageModel;
 
             htmlRepresentation.createLinksBetweenHtmlAndModel(codeContainer, model);
+
+            InputManager.initialize(this.getPanelContent());
         },
 
         getPanelContent: function()
