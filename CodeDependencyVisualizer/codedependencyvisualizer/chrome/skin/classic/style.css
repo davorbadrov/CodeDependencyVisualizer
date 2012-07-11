@@ -97,9 +97,19 @@ body
     background-color: #c6ff61;
 }
 
-.active
+.selected
 {
     background-color: #c6ff61;
+}
+
+.dependent
+{
+    background-color: #5f9ea0;
+}
+
+.secondHandDependency
+{
+    background-color: #87ceeb;
 }
 
 .dataDependency

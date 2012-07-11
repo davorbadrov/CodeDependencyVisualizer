@@ -56,6 +56,7 @@ var htmlRepresentation =
             browser.registerImportantConstructReachedCallback(dependencyGraph.handleImportantConstructReached, dependencyGraph);
 
             browser.buildPageFromModel(this.pageModel);
+            this.establishDependencies(dependencyGraph);
         }
         catch(e) { alert("HtmlRepresentation - error when determining dependencies: " + e); }
     },
@@ -394,22 +395,50 @@ var htmlRepresentation =
 
     createLinksBetweenHtmlAndModel: function(code, model)
     {
-        //TODO: check for missing model elements
-        FBL.Firecrow.ASTHelper.traverseAst(model, function(modelElement, propName)
+        try
         {
-            if (propName === "pathAndModel" || modelElement.type === "Program")  { return; }
+            //TODO: check for missing model elements
+            FBL.Firecrow.ASTHelper.traverseAst(model, function(modelElement, propName)
+            {
+                if (propName === "pathAndModel" || modelElement.type === "Program")  { return; }
 
-            var nodeId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(modelElement.nodeId);
-            var htmlNode = code.querySelector("#"+nodeId);
+                var nodeId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(modelElement.nodeId);
+                var htmlNode = code.querySelector("#"+nodeId);
 
-            if (htmlNode == null && modelElement.type == "TextNode") { return; }
-            if (htmlNode == null) {
-            return; // the tree containes node models for the whole page,
-                   // it's normal if it doesn't find each one in the current document
+                if (htmlNode == null && modelElement.type == "TextNode") { return; }
+                if (htmlNode == null) {
+                    return; // the tree containes node models for the whole page,
+                    // it's normal if it doesn't find each one in the current document
+                }
+
+                modelElement.htmlNode = htmlNode;
+                htmlNode.model = modelElement;
+            });
+        }
+        catch (e) { alert("Error while creating links between HTML and ast model: " + e); }
+    },
+
+    establishDependencies: function(dependencyGraph)
+    {
+        try
+        {
+            var allNodes = dependencyGraph.nodes;
+
+            for (var i = 0, length = allNodes.length; i < length; i++)
+            {
+                var node = allNodes[i];
+                var nodeModel = node.model;
+
+                if (nodeModel.dependencies == null) { nodeModel.dependencies = []; }
+
+                var edges = node.dataDependencies;
+
+                for (var j = 0, dependencyLenght = edges.length; j < dependencyLenght; j++)
+                {
+                    nodeModel.dependencies.push(edges[j].destinationNode.model);
+                }
             }
-
-            modelElement.htmlNode = htmlNode;
-            htmlNode.model = modelElement;
-        });
+        }
+        catch (e) { alert("Error while establishing dependencies: " + e); }
     }
 };

@@ -96,6 +96,9 @@ FBL.ns(function() { with (FBL) {
 
             // asynchronous function calls ? HTML doesn't get generated before calling this function or something
             //this.changePanelContent(htmlRepresentation.site);
+
+
+
         },
 
         onHtmlButton: function()
@@ -115,7 +118,15 @@ FBL.ns(function() { with (FBL) {
             //this.changePanelContent(htmlRepresentation.site);
             //XulHelper.createMenus();
 
+            // circular test - OK - establish html and model link works
+//            var el = this.getPanelContent().querySelector("#astElement000001");
+//            alert(el);
+//            alert(el.id);
+//            alert(el.model.nodeId);
+//            alert(el.model.htmlNode.id);
+
             InputManager.initialize(parentNode);
+
         },
 
         changePanelContent: function(newContent)
