@@ -20,15 +20,6 @@ var InputManager =
 
                     InputManager.deselectAllCodeElements(documentRoot);
 
-                    var deps = "";
-
-                    for (var x = 0; x < this.model.dependencies.length; x++)
-                    {
-                        deps += this.model.dependencies[x].nodeId + " ";
-                    }
-
-                    alert("clicked: " + this.id + " " + this.className);
-
                     this.classList.add("selected");
 
                     var dependencies = this.model.dependencies;
