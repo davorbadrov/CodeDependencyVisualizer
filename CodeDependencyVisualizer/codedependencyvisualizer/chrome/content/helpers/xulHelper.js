@@ -79,6 +79,11 @@ var XulHelper =
             buttonContainer.appendChild(toolbar);
         }
 
+        // navigational buttons
+        var toolbar = document.getElementById("fbToolbarInner");
+        var navigation = this.createElementNavigationButtons();
+        toolbar.appendChild(navigation);
+
         this.isMenuCreated = true;
     },
 
@@ -136,6 +141,26 @@ var XulHelper =
         return htmlButton;
     },
 
+    createElementNavigationButtons: function()
+    {
+        const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+        var navigationMenuHBox = document.createElementNS(XUL_NS, "hbox");
+        navigationMenuHBox.setAttribute("id", "fbCodeDependencyVisualizerNavigationButtons");
+
+        var selectUpButton = this.createButton("selectUpButton", "▲ ", "Select former ast element", "alert(\"up\");");
+        var selectDownButton = this.createButton("selectDownButton", "▼ ", "Select succeeding ast element", "alert(\"down\");");
+        var selectedLabel = this.createLabel("Selected: none");
+
+        navigationMenuHBox.appendChild(this.createSeparator());
+        navigationMenuHBox.appendChild(selectUpButton);
+        navigationMenuHBox.appendChild(selectDownButton);
+        navigationMenuHBox.appendChild(this.createSeparator());
+        navigationMenuHBox.appendChild(selectedLabel);
+
+        return navigationMenuHBox;
+    },
+
     createSeparator: function()
     {
         const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
@@ -145,6 +170,30 @@ var XulHelper =
         return separator;
     },
 
+    createButton: function(id, label, tooltiptext, oncommand)
+    {
+        const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+        var button = document.createElementNS(XUL_NS, "toolbarbutton");
+        button.setAttribute("id", id);
+        button.setAttribute("label", label);
+        button.setAttribute("tooltiptext", tooltiptext);
+        button.setAttribute("oncommand", oncommand);
+
+        return button;
+    },
+
+    createLabel: function(text, id)
+    {
+        const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+        var button = document.createElementNS(XUL_NS, "label");
+        button.setAttribute("value", text);
+        button.setAttribute("style", "padding-top: 3px;");
+
+        return button;
+    },
+
     destroyUI: function()
     {
         var buttonContainer = document.getElementById(this.buttonContainerId);
@@ -152,6 +201,13 @@ var XulHelper =
         while (buttonContainer.hasChildNodes())
         {
             buttonContainer.removeChild(buttonContainer.firstChild);
+        }
+
+        var navigation = document.getElementById("fbCodeDependencyVisualizerNavigationButtons");
+
+        if (navigation != null)
+        {
+            navigation.parentNode.removeChild(navigation);
         }
 
         this.isMenuCreated = false;
