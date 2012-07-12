@@ -66,16 +66,6 @@ var InputManager =
                     }
                 }
             }
-
-
-            var dctor = documentRoot.querySelector("#astElement000020");
-
-            alert(dctor.parentNode.innerHTML);
-
-            for (var i = 0; i < dctor.model.dependencies.length; i++)
-            {
-                alert(dctor.model.dependencies[i].id);
-            }
         }
         catch (e) { alert("Error while initializing input: " + e); }
     },
