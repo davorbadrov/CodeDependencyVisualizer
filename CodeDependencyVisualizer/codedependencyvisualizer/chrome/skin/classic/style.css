@@ -99,16 +99,19 @@ body
 
 .selected
 {
+    z-index: 5;
     background-color: #c6ff61;
 }
 
 .dependent
 {
+    z-index: 4;
     background-color: #5f9ea0;
 }
 
 .secondHandDependency
 {
+    z-index: 3;
     background-color: #87ceeb;
 }
 

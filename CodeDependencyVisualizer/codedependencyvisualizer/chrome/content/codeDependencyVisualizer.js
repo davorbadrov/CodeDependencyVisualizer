@@ -73,8 +73,6 @@ FBL.ns(function() { with (FBL) {
 
         initContext: function()
         {
-            // initialize javascript and css buttons
-            //var context = Firebug.currentContext;
         },
 
         reattachContext: function()
@@ -91,42 +89,16 @@ FBL.ns(function() { with (FBL) {
 
             htmlRepresentation.initialize(function()
             {
-                htmlRepresentation.determineDependencies();
             }, this);
 
             // asynchronous function calls ? HTML doesn't get generated before calling this function or something
             //this.changePanelContent(htmlRepresentation.site);
-
-
 
         },
 
         onHtmlButton: function()
         {
             this.changePanelContent(htmlRepresentation.site);
-
-            //var parentNode = panel.panelNode;
-            //parentNode.innerHTML = htmlRepresentation.site;
-
-//            htmlRepresentation.initialize(function()
-//            {
-//                htmlRepresentation.determineDependencies();
-//                XulHelper.createMenus();
-//            }, this);
-
-
-            //this.changePanelContent(htmlRepresentation.site);
-            //XulHelper.createMenus();
-
-            // circular test - OK - establish html and model link works
-//            var el = this.getPanelContent().querySelector("#astElement000001");
-//            alert(el);
-//            alert(el.id);
-//            alert(el.model.nodeId);
-//            alert(el.model.htmlNode.id);
-
-            InputManager.initialize(parentNode);
-
         },
 
         changePanelContent: function(newContent)
@@ -138,17 +110,20 @@ FBL.ns(function() { with (FBL) {
             parentNode.innerHTML = newContent;
 
             this.onPanelContentChange();
-            //InputManager.initialize(parentNode);
         },
 
         onPanelContentChange: function()
         {
+            htmlRepresentation.initialized = false;
+            htmlRepresentation.initialize();
+
             var codeContainer = this.getPanelContent();
             var model = htmlRepresentation.pageModel;
 
             htmlRepresentation.createLinksBetweenHtmlAndModel(codeContainer, model);
+            htmlRepresentation.establishDependencies(htmlRepresentation.dependencyGraph);
 
-            InputManager.initialize(this.getPanelContent());
+            InputManager.initialize(codeContainer);
         },
 
         getPanelContent: function()
@@ -158,12 +133,12 @@ FBL.ns(function() { with (FBL) {
             var parentNode = panel.panelNode;
 
             return parentNode;
-        },
-
-        establishDependencies: function()
-        {
-
         }
+
+//        establishDependencies: function()
+//        {
+//
+//        }
 //        onJavascriptButton: function()
 //        {
 //            var panel = context.getPanel(panelName);

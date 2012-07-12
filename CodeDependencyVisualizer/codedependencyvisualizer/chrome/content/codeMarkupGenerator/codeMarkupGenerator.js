@@ -51,7 +51,6 @@ FBL.ns(function () { with (FBL) {
                 else if (astHelper.isIdentifier(element))            { return this.generateFromIdentifier(element); }
                 else
                 {
-                    console.log(element);
                     alert("Error while generating HTML in codeMarkupGenerator: unidentified ast element."); return "";
                 }
             }
@@ -699,7 +698,14 @@ FBL.ns(function () { with (FBL) {
                 var _style = this.getStyle(ifStatement);
 
                 var _keyword = "if";
-                if (isElseIfStatement)
+
+                console.log("start");
+                console.log(ifStatement);
+                console.log(isElseIfStatement);
+                console.log(ifStatement.alternate);
+                console.log("end");
+
+                if (isElseIfStatement == true)
                 {
                     _keyword = "else if";
                     _style = "display: block;";
@@ -720,6 +726,8 @@ FBL.ns(function () { with (FBL) {
 //                        + this.generateHtml(ifStatement.alternate);
                     if (ifStatement.alternate.type == "IfStatement")
                         html += this.generateFromIfStatement(ifStatement.alternate, true);
+                    else
+                        html += this.getElementHtml("span", {class:"keyword"}, "else") + this.generateHtml(ifStatement.alternate);
 
                 }
 
@@ -1215,18 +1223,18 @@ FBL.ns(function () { with (FBL) {
                 if (!astHelper.isLiteral(literal)) { alert("The literal is not valid when generating html."); return ""; }
 
                 if (valueTypeHelper.isString(literal.value))
-                    return this.getElementHtml("span", {class: "String", id: "astElement" + this.formatId(literal.nodeId)}, "\"" + this.escapeHtml(literal.value) + "\"");
+                    return this.getElementHtml("span", {class: "String node", id: "astElement" + this.formatId(literal.nodeId)}, "\"" + this.escapeHtml(literal.value) + "\"");
                 else if (valueTypeHelper.isBoolean(literal.value) || valueTypeHelper.isNull(literal.value))
-                    return this.getElementHtml("span", {class: "Keyword", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
+                    return this.getElementHtml("span", {class: "Keyword node", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
                 else if(valueTypeHelper.isInteger(literal.value))
-                    return this.getElementHtml("span", {class: "Number", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
+                    return this.getElementHtml("span", {class: "Number node", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
                 else if(valueTypeHelper.isRegExp(literal.value))
                 {
                     alert("RegExp!!");
-                    return this.getElementHtml("span", {class: "RegExp", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
+                    return this.getElementHtml("span", {class: "RegExp node", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
                 }
                 else
-                    return this.getElementHtml("span", {class: astHelper.CONST.Literal, id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
+                    return this.getElementHtml("span", {class: astHelper.CONST.Literal, id: "astElement node" + this.formatId(literal.nodeId)}, literal.value);
             }
             catch(e) { alert("Error when generating HTML from literal:" + e);}
         },
