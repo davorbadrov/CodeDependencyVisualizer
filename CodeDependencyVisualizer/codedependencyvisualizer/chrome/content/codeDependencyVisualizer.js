@@ -123,7 +123,7 @@ FBL.ns(function() { with (FBL) {
             htmlRepresentation.createLinksBetweenHtmlAndModel(codeContainer, model);
             htmlRepresentation.establishDependencies(htmlRepresentation.dependencyGraph);
 
-            InputManager.initialize(codeContainer);
+            InputManager.initialize();
         },
 
         getPanelContent: function()
@@ -144,7 +144,7 @@ FBL.ns(function() { with (FBL) {
 //            var panel = context.getPanel(panelName);
 //            var parentNode = panel.panelNode;
 //            parentNode.innerHTML = htmlRepresentation.javascript[2].representation;
-//            InputManager.initialize(parentNode);
+//            InputManager.initialize();
 //        },
 //
 //        onCssButton: function()
@@ -152,7 +152,7 @@ FBL.ns(function() { with (FBL) {
 //            var panel = context.getPanel(panelName);
 //            var parentNode = panel.panelNode;
 //            parentNode.innerHTML = htmlRepresentation.cssStyle[0].representation;
-//            InputManager.initialize(parentNode);
+//            InputManager.initialize();
 //        },
 //
 //        onClearButton: function()
