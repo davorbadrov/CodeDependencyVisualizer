@@ -148,15 +148,15 @@ var XulHelper =
         var navigationMenuHBox = document.createElementNS(XUL_NS, "hbox");
         navigationMenuHBox.setAttribute("id", "fbCodeDependencyVisualizerNavigationButtons");
 
-        var selectUpButton = this.createButton("selectUpButton", "▲ ", "Select former ast element", "alert(\"up\");");
-        var selectDownButton = this.createButton("selectDownButton", "▼ ", "Select succeeding ast element", "alert(\"down\");");
-        var selectedLabel = this.createLabel("Selected: none");
+        var selectUpButton = this.createButton("selectUpButton", "▲ ", "Select previous ast element", "InputManager.selectPreviousNode();");
+        var selectDownButton = this.createButton("selectDownButton", "▼ ", "Select next ast element", "InputManager.selectNextNode();");
+        var selectedElementLabel = this.createLabel("Selected: none");
 
         navigationMenuHBox.appendChild(this.createSeparator());
         navigationMenuHBox.appendChild(selectUpButton);
         navigationMenuHBox.appendChild(selectDownButton);
         navigationMenuHBox.appendChild(this.createSeparator());
-        navigationMenuHBox.appendChild(selectedLabel);
+        navigationMenuHBox.appendChild(selectedElementLabel);
 
         return navigationMenuHBox;
     },
@@ -183,15 +183,26 @@ var XulHelper =
         return button;
     },
 
-    createLabel: function(text, id)
+    createLabel: function(labelText)
     {
         const XUL_NS = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
 
-        var button = document.createElementNS(XUL_NS, "label");
-        button.setAttribute("value", text);
-        button.setAttribute("style", "padding-top: 3px;");
+        var label = document.createElementNS(XUL_NS, "label");
+        label.setAttribute("value", labelText);
+        label.setAttribute("style", "padding-top: 3px;");   // to keep text in line with buttons
 
-        return button;
+        return label;
+    },
+
+    updateSelectedNodeLabel: function(nodeId, nodeClass)
+    {
+        if (nodeId == null || nodeClass == null) { return; }
+
+        var navigationMenu = document.getElementById("fbCodeDependencyVisualizerNavigationButtons");
+        var label = navigationMenu.getElementsByTagName("label");
+
+        var labelText = "Selected: " + nodeId + ", " + nodeClass + ".";
+        label[0].setAttribute("value", labelText);
     },
 
     destroyUI: function()
