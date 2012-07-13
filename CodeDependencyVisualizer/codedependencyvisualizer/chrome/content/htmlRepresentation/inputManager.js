@@ -6,62 +6,57 @@
 
 var InputManager =
 {
-    initialize: function(documentRoot)
-    {
-        try
-        {
-            var nodes = documentRoot.querySelectorAll(".node");
+    initialize:function () {
+        try {
+            const document = Firebug.CodeDependencyModule.getPanelContent();
 
-            for (var i = 0; i < nodes.length; i++)
-            {
-                nodes[i].onclick = function(eventArgs)
-                {
+            var nodes = document.querySelectorAll(".node");
+
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].onclick = function (eventArgs) {
                     eventArgs.cancelBubble = true;
 
-                    InputManager.deselectAllCodeElements(documentRoot);
-
                     InputManager.selectNode(this);
-                    //this.classList.add("selected");
-
-                    InputManager.selectDependencies(this);
                 }
             }
         }
-        catch (e) { alert("Error while initializing input: " + e); }
+        catch (e) {
+            alert("Error while initializing input: " + e);
+        }
     },
 
-    deselectAllCodeElements: function(documentRoot)
-    {
-        var currentlySelected = documentRoot.querySelectorAll(".selected");
-        var currentlyDependent = documentRoot.querySelectorAll(".dependent");
-        var currentlySecondDependent = documentRoot.querySelectorAll(".secondHandDependency");
+    deselectAllCodeElements:function () {
+        const document = Firebug.CodeDependencyModule.getPanelContent();
 
-        for(var i = 0; i < currentlySelected.length; i++)
-        {
+        var currentlySelected = document.querySelectorAll(".selected");
+        var currentlyDependent = document.querySelectorAll(".dependent");
+        var currentlySecondDependent = document.querySelectorAll(".secondHandDependency");
+
+        for (var i = 0; i < currentlySelected.length; i++) {
             currentlySelected[i].classList.remove("selected");
         }
 
-        for(var i = 0; i < currentlyDependent.length; i++)
-        {
+        for (var i = 0; i < currentlyDependent.length; i++) {
             currentlyDependent[i].classList.remove("dependent");
         }
 
-        for(var i = 0; i < currentlySecondDependent.length; i++)
-        {
+        for (var i = 0; i < currentlySecondDependent.length; i++) {
             currentlySecondDependent[i].classList.remove("secondHandDependency");
         }
     },
 
-    getAllDependencies: function(item, result)
-    {
-        if (item == null) { return result; }
+    getAllDependencies:function (item, result) {
+        if (item == null) {
+            return result;
+        }
 
         var dependecies = item.dependencies;
 
-        for (var i = 0; i < dependecies.length; i++)
-        {
+        for (var i = 0; i < dependecies.length; i++) {
             var currItem = dependecies[i];
-            if (result[currItem.nodeId] != null) { continue; }
+            if (result[currItem.nodeId] != null) {
+                continue;
+            }
 
             result[currItem.nodeId] = currItem;
 
@@ -69,94 +64,140 @@ var InputManager =
         }
     },
 
-    selectDependencies: function(htmlNode)
-    {
-        if (htmlNode == null) { alert("A node has to be selected to get it's dependencies."); return; }
+    selectDependencies:function (htmlNode) {
+        if (htmlNode == null) {
+            alert("A node has to be selected to get it's dependencies.");
+            return;
+        }
 
         var dependencies = htmlNode.model.dependencies;
 
-        if (dependencies == null) { return; }
+        if (dependencies == null) {
+            return;
+        }
 
-        for (var j = 0; j < dependencies.length; j++)
-        {
+        for (var j = 0; j < dependencies.length; j++) {
             var currentItem = dependencies[j];
             var allDependencies = {};
             InputManager.getAllDependencies(currentItem, allDependencies);
 
-            for (var nodeId in allDependencies)
-            {
+            for (var nodeId in allDependencies) {
+
+                if (currentItem.htmlNode != null) {
+                    // not to hide higher priority dependencies
+                    if (!hasClass(currentItem.htmlNode, "selected")) {
+                        currentItem.htmlNode.classList.add("dependent");
+                    }
+                }
+                else {
+                    // direct dependency could also be in another source files
+                    // check former comment
+                }
+
                 var dependency = allDependencies[nodeId];
-                if (dependency.htmlNode != null)
-                {
-                    dependency.htmlNode.classList.add("secondHandDependency");
+                if (dependency.htmlNode != null) {
+                    // not to hide higher priority dependencies
+                    if (!hasClass(dependency.htmlNode, "selected") && !hasClass(dependency.htmlNode, "dependent")) {
+                        dependency.htmlNode.classList.add("secondHandDependency");
+                    }
+
                 }
                 else {
                     // maybe it's dependent upon a variable/element from another source file
                     // therefore it can be normal if it isn't found
                 }
             }
+        }
+    },
 
-            if (currentItem.htmlNode != null)
-            {
-                currentItem.htmlNode.classList.add("dependent");
-            }
-            else
-            {
-                // direct dependency could also be in another source files
-                // check former comment
+    selectNode:function (htmlNode) {
+        InputManager.deselectAllCodeElements();
+        htmlNode.classList.add("selected");
+        InputManager.selectDependencies(htmlNode);
+        XulHelper.updateSelectedNodeLabel(htmlNode.id, htmlNode.classList[0]);
+    },
+
+    selectPreviousNode:function () {
+//        // TODO: some nodes are empty (like text nodes), need to fix that, same applies for selectNextNode()
+//        var document = Firebug.CodeDependencyModule.getPanelContent();
+//
+//        var previousSelected = document.querySelector(".selected");
+//
+//        if (previousSelected == null) { return; } // need for error messages?
+//
+//        var idNumber = previousSelected.model.nodeId - 1; // problem w/ textNodes and similar stuff...
+//        var astId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(idNumber);
+//
+//        var selected = document.querySelector("#" + astId);
+//
+//        if (selected == null) { return; }
+//        while (selected.model.type == "textNode" && selected.model.textContent == "") {
+//
+//        }
+//
+//        InputManager.deselectAllCodeElements();
+//
+//        InputManager.selectNode(selected);
+//
+//        InputManager.selectDependencies(selected);
+
+        const document = Firebug.CodeDependencyModule.getPanelContent();
+
+        var allNodes = document.querySelectorAll(".node");
+        var currentNode = document.querySelector(".selected");
+
+        for (var i = 0; i < allNodes.length; i++) {
+            if (currentNode == allNodes[i]) {
+                InputManager.deselectAllCodeElements();
+                // make sure not to select empty textNode (ast tree artefacts?)
+                //while (hasClass(allNodes[i], "textNode") && allNodes[i].textContent != "") i++;
+                while (i > 0 && hasClass(allNodes[i-1], "textNode") && allNodes[i-1].innerHTML != "")
+                    --i;
+
+                if (i > 0)
+                    InputManager.selectNode(allNodes[--i]);
+                return;
             }
         }
     },
 
-    selectNode: function(htmlNode)
-    {
-        htmlNode.classList.add("selected");
+    selectNextNode:function () {
+//        var document = Firebug.CodeDependencyModule.getPanelContent();
+//
+//        var previousSelected = document.querySelector(".selected");
+//
+//        if (previousSelected == null) {
+//            return;
+//        } // need for error messages?
+//
+//        var idNumber = previousSelected.model.nodeId + 1;
+//        var astId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(idNumber);
+//
+//        var selected = document.querySelector("#" + astId);
+//
+//        if (selected == null) {
+//            return;
+//        }
+//
+//        InputManager.deselectAllCodeElements();
+//
+//        InputManager.selectNode(selected);
+//
+//        InputManager.selectDependencies(selected);
+        const document = Firebug.CodeDependencyModule.getPanelContent();
 
-        //var class = FBL.Firecrow.CodeMarkupGenerator.
-        XulHelper.updateSelectedNodeLabel(htmlNode.id, htmlNode.classList[0]);
-    },
+        var allNodes = document.querySelectorAll(".node");
+        var currentNode = document.querySelector(".selected");
 
-    selectPreviousNode: function()
-    {
-        var document = Firebug.CodeDependencyModule.getPanelContent();
-
-        var previousSelected = document.querySelector(".selected");
-
-        if (previousSelected == null) { return; } // need for error messages?
-
-        var idNumber = previousSelected.model.nodeId - 1;
-        var astId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(idNumber);
-
-        var selected = document.querySelector("#" + astId);
-
-        if (selected == null) { return; }
-
-        InputManager.deselectAllCodeElements(document);
-
-        InputManager.selectNode(selected);
-
-        InputManager.selectDependencies(selected);
-    },
-
-    selectNextNode: function()
-    {
-        var document = Firebug.CodeDependencyModule.getPanelContent();
-
-        var previousSelected = document.querySelector(".selected");
-
-        if (previousSelected == null) { return; } // need for error messages?
-
-        var idNumber = previousSelected.model.nodeId + 1;
-        var astId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(idNumber);
-
-        var selected = document.querySelector("#" + astId);
-
-        if (selected == null) { return; }
-
-        InputManager.deselectAllCodeElements(document);
-
-        InputManager.selectNode(selected);
-
-        InputManager.selectDependencies(selected);
+        for (var i = 0; i < allNodes.length; i++) {
+            if (currentNode == allNodes[i]) {
+                InputManager.deselectAllCodeElements();
+                // make sure not to select empty textNode (ast tree artefacts?)
+                //while (hasClass(allNodes[i], "textNode") && allNodes[i].textContent != "") i++;
+                while (hasClass(allNodes[i+1], "textNode") && allNodes[i+1].innerHTML != "" && i < allNodes.length) ++i;
+                InputManager.selectNode(allNodes[++i]);
+                return;
+            }
+        }
     }
-}
+};
