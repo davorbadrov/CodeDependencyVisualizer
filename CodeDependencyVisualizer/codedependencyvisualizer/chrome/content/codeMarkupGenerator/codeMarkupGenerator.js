@@ -467,7 +467,7 @@ FBL.ns(function () { with (FBL) {
                 if(!astHelper.isThisExpression(thisExpression)) { alert("Invalid element when generating this expression html code!"); return ""; }
 
                 var _class = "keyword node";
-                var _id = "astElement" + this.formatId(thisExpression.astId);
+                var _id = "astElement" + this.formatId(thisExpression.nodeId);
 
                 return this.getElementHtml("span", { class: _class, id: _id}, "this");
             }
@@ -648,8 +648,8 @@ FBL.ns(function () { with (FBL) {
 
                     for (var i = 0; i < objectExpression.properties.length; i++)
                     {
-                        html += '<div class="objectProperty" style ="' + _propertyContainerStyle + '">';
-
+                        var id = "astElement" + this.formatId(objectExpression.properties[i].nodeId);
+                        html += '<div class="objectProperty node" id ="' + id + '" style ="' + _propertyContainerStyle + '">';
 
                         if (objectExpression.properties[i].kind == "init")
                         {
@@ -1234,7 +1234,7 @@ FBL.ns(function () { with (FBL) {
                     return this.getElementHtml("span", {class: "RegExp node", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
                 }
                 else
-                    return this.getElementHtml("span", {class: astHelper.CONST.Literal, id: "astElement node" + this.formatId(literal.nodeId)}, literal.value);
+                    return this.getElementHtml("span", {class: astHelper.CONST.Literal + " node", id: "astElement" + this.formatId(literal.nodeId)}, literal.value);
             }
             catch(e) { alert("Error when generating HTML from literal:" + e);}
         },
