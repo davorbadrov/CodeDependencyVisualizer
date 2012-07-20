@@ -85,7 +85,10 @@ var InputManager =
 
                 if (currentItem.htmlNode != null) {
                     // not to hide higher priority dependencies
-                    if (!hasClass(currentItem.htmlNode, "selected")) {
+                    if (!hasClass(currentItem.htmlNode, "selected")
+                     || !hasClass(currentItem.htmlNode.parentNode, "selected")
+                     && !this.doesParentHaveAHigherPriorityDependency(currentItem.htmlNode, "dependent")
+                    ) {
                         currentItem.htmlNode.classList.add("dependent");
                     }
                 }
@@ -97,7 +100,10 @@ var InputManager =
                 var dependency = allDependencies[nodeId];
                 if (dependency.htmlNode != null) {
                     // not to hide higher priority dependencies
-                    if (!hasClass(dependency.htmlNode, "selected") && !hasClass(dependency.htmlNode, "dependent")) {
+                    if (!hasClass(dependency.htmlNode, "selected")
+                     && !hasClass(dependency.htmlNode, "dependent")
+                     && !this.doesParentHaveAHigherPriorityDependency(dependency.htmlNode, "secondHandDependency"))
+                    {
                         dependency.htmlNode.classList.add("secondHandDependency");
                     }
 
@@ -118,28 +124,6 @@ var InputManager =
     },
 
     selectPreviousNode:function () {
-//        // TODO: some nodes are empty (like text nodes), need to fix that, same applies for selectNextNode()
-//        var document = Firebug.CodeDependencyModule.getPanelContent();
-//
-//        var previousSelected = document.querySelector(".selected");
-//
-//        if (previousSelected == null) { return; } // need for error messages?
-//
-//        var idNumber = previousSelected.model.nodeId - 1; // problem w/ textNodes and similar stuff...
-//        var astId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(idNumber);
-//
-//        var selected = document.querySelector("#" + astId);
-//
-//        if (selected == null) { return; }
-//        while (selected.model.type == "textNode" && selected.model.textContent == "") {
-//
-//        }
-//
-//        InputManager.deselectAllCodeElements();
-//
-//        InputManager.selectNode(selected);
-//
-//        InputManager.selectDependencies(selected);
 
         const document = Firebug.CodeDependencyModule.getPanelContent();
 
@@ -148,42 +132,24 @@ var InputManager =
 
         for (var i = 0; i < allNodes.length; i++) {
             if (currentNode == allNodes[i]) {
-                InputManager.deselectAllCodeElements();
+
                 // make sure not to select empty textNode (ast tree artefacts?)
                 //while (hasClass(allNodes[i], "textNode") && allNodes[i].textContent != "") i++;
                 while (i > 0 && hasClass(allNodes[i-1], "textNode") && allNodes[i-1].innerHTML != "")
                     --i;
 
-                if (i > 0)
-                    InputManager.selectNode(allNodes[--i]);
+                if (i-1 < 0) { return; }
+
+                InputManager.deselectAllCodeElements();
+                InputManager.selectNode(allNodes[--i]);
+
                 return;
             }
         }
     },
 
     selectNextNode:function () {
-//        var document = Firebug.CodeDependencyModule.getPanelContent();
-//
-//        var previousSelected = document.querySelector(".selected");
-//
-//        if (previousSelected == null) {
-//            return;
-//        } // need for error messages?
-//
-//        var idNumber = previousSelected.model.nodeId + 1;
-//        var astId = "astElement" + FBL.Firecrow.CodeMarkupGenerator.formatId(idNumber);
-//
-//        var selected = document.querySelector("#" + astId);
-//
-//        if (selected == null) {
-//            return;
-//        }
-//
-//        InputManager.deselectAllCodeElements();
-//
-//        InputManager.selectNode(selected);
-//
-//        InputManager.selectDependencies(selected);
+
         const document = Firebug.CodeDependencyModule.getPanelContent();
 
         var allNodes = document.querySelectorAll(".node");
@@ -191,13 +157,54 @@ var InputManager =
 
         for (var i = 0; i < allNodes.length; i++) {
             if (currentNode == allNodes[i]) {
-                InputManager.deselectAllCodeElements();
                 // make sure not to select empty textNode (ast tree artefacts?)
                 //while (hasClass(allNodes[i], "textNode") && allNodes[i].textContent != "") i++;
                 while (hasClass(allNodes[i+1], "textNode") && allNodes[i+1].innerHTML != "" && i < allNodes.length) ++i;
+
+                if (i >= allNodes.length) { return; } // element range check
+
+                InputManager.deselectAllCodeElements();
                 InputManager.selectNode(allNodes[++i]);
+
                 return;
             }
         }
+    },
+
+    // check if the parent element has a higher priority dependency, to avoid markup clashes
+    doesParentHaveAHigherPriorityDependency: function(htmlNode, dependencyType) {
+    try
+    {
+        var elementParent = htmlNode.parentNode;
+
+        // if element is directly dependent, only higher priority is selected
+        if (dependencyType === "dependent")
+        {
+            while (elementParent != null && elementParent.className != undefined)
+            {
+                if (hasClass(elementParent, "selected"))
+                {
+                    return true;
+                }
+            }
+
+            elementParent = elementParent.parentNode;
+        }
+        else  // dependency type is secondHandDependency
+        {
+            while (elementParent != null && elementParent.className != undefined)
+            {
+                if (hasClass(elementParent, "selected") || hasClass(elementParent, "dependent"))
+                {
+                    return true;
+                }
+
+                elementParent = elementParent.parentNode;
+            }
+        }
+
+        return false;
+    }
+    catch (e) { alert("Error in evaluating dependency priorities: " + e); }
     }
 };
